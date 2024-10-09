@@ -1,132 +1,139 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, TextField, InputAdornment, Button, Menu, MenuItem } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { AppBar, Toolbar, IconButton, Button, Typography, Box, Badge } from '@mui/material';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
-import { ArrowDropDown } from '@mui/icons-material'; //  ícono de flecha hacia abajo
-import logo from '../img_rsc/logoSVG.svg'; // Ruta del logo
-import { Home } from '@mui/icons-material'; // ICONO DE HOME
+import logo from '../img_rsc/logoSVG.svg';
 
 const Navbar = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  // Definición de categorías estáticas
   const categories = [
-    { id: 'cellphones', name: 'Celulares' },
-    { id: 'laptops', name: 'Laptops' },
-    { id: 'accessories', name: 'Accesorios' },
+    { id: 'tv', name: 'TV' },
+    { id: 'computers', name: 'Computers' },
+    { id: 'appliances', name: 'Appliances' },
+    { id: 'cellphones', name: 'Cellphones' },
+    { id: 'videogames', name: 'Video Games' },
   ];
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#ede7d5', elevation: 4 }}>
-      <Toolbar sx={{ justifyContent: 'space-between', padding: '0 20px', maxHeight: '70px' }}> {/* Ajusta minHeight */}
-        {/* Barra de búsqueda */}
-        <TextField
-          variant="outlined"
-          placeholder="Search..."
-          size="small"
-          sx={{ width: '250px', backgroundColor: '#f8f9fa', borderRadius: 1 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        {/* Logo */}
-       {/* <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', height: '100%' }}>
-          <img src={logo} alt="Logo" style={{ maxHeight: '150px', margin: '0 0px' }} />
-       </Link>*/}
-
+    <AppBar 
+      position="static" 
+      sx={{ 
+        background: '#ebf7f8',
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', 
+        borderRadius: '16px', // Add border radius for rounded edges
+        overflow: 'hidden' // Ensures the rounded corners are applied correctly
+      }}
+    >
+      {/* Top Row */}
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: '0', minHeight: '60px', alignItems: 'center' }}>
         
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Link to="/cart" style={{ textDecoration: 'none' }}>
-            <IconButton color="inherit" sx={{ display: 'flex', alignItems: 'center', color: '#545454' }} aria-label="Cart">
-              <FaShoppingCart size={24} /> Cart (0)
+        {/* Logo */}
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <img 
+            src={logo} 
+            alt="Logo" 
+            style={{ 
+              height: '200px', 
+              maxWidth: '200px', 
+              margin: '0', 
+            }} 
+          />
+        </Link>
+
+        {/* E-ORDER Title and Tagline */}
+        <Box sx={{ textAlign: 'center', flexGrow: 1 }}>
+          <Typography 
+            variant="h1" 
+            sx={{ 
+              color: '#49708a', 
+              fontWeight: 'bold',
+              fontFamily: 'Arial, sans-serif', 
+              letterSpacing: '1px',
+              paddingTop: '5px',  
+              paddingBottom: '0', 
+              transition: 'color 0.3s',
+              '&:hover': {
+                color: '#88abc2'
+              }
+            }}
+          >
+            E-ORDER
+          </Typography>
+          <Typography variant="h6" sx={{ color: '#49708a' }} align="center">
+            Your one-stop shop for electronics!
+          </Typography>
+        </Box>
+
+        {/* Cart and Profile Icons */}
+        <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+          <Link to="/cart" style={{ textDecoration: 'none', color: '#4a4a4a' }}>
+            <Badge badgeContent={4} color="primary">
+              <IconButton color="inherit" aria-label="Cart">
+                <FaShoppingCart size={28} />
+              </IconButton>
+            </Badge>
+          </Link>
+          <Link to="/profile/signin" style={{ textDecoration: 'none', color: '#4a4a4a', marginLeft: '20px' }}>
+            <IconButton color="inherit" aria-label="Profile">
+              <FaUser size={28} />
             </IconButton>
           </Link>
-          <Link to="/profile/signin" style={{ textDecoration: 'none' }}>
-            <IconButton color="inherit" sx={{ display: 'flex', alignItems: 'center', color: '#545454' }} aria-label="Profile">
-              <FaUser size={24} /> Profile
-            </IconButton>
-          </Link>
-        </div>
+        </Box>
       </Toolbar>
 
-      {/* Barra inferior  */}
-      <Toolbar sx={{ justifyContent: 'space-between', borderTop: '1px solid #7b8a84', paddingTop: '10px' }}>
-        <Button component={Link} to="/" color="inherit" sx={{ color: '#545454', fontWeight: '500', display: 'flex', alignItems: 'center' }}>
-            <Home sx={{ marginRight: '5px' }} /> {/* Ícono de Home */}
-            HOME
-        </Button>
-
-        {/* Menú de Categorías */}
-        <div>
-        <Button
-        onClick={handleMenuClick}
-        color="inherit"
-        sx={{ color: '#545454', fontWeight: '500', display: 'flex', alignItems: 'center' }}
-    >
-        CATEGORIES <ArrowDropDown sx={{ marginLeft: '5px' }} />
-    </Button>
-    <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-        PaperProps={{
-            sx: {
-                backgroundColor: '#ede7d5',
-                borderRadius: '8px',
-                boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                maxHeight: '300px', // Limita la altura del menú
-                overflowY: 'auto', // Añade scroll si hay demasiados elementos
-                '& .MuiMenuItem-root': {
-                    padding: '10px 20px', // Aumenta el padding
-                    fontSize: '16px', // Aumenta el tamaño de fuente
-                    '&:hover': {
-                        backgroundColor: '#b7cc18',
-                        color: '#fff',
-                    },
-                    '&:focus': {
-                        backgroundColor: '#b7cc18',
-                        color: '#fff',
-                    },
-                },
-            },
+      {/* Bottom Row: Categories and Most Popular Items Button */}
+      <Toolbar 
+        sx={{ 
+          justifyContent: 'flex-start', 
+          borderTop: '2px solid #7b8a84', // Make the line thicker
+          padding: '10px 20px' 
         }}
-    >
-        {categories.map((category) => (
-            <MenuItem
-                key={category.id}
-                onClick={() => {
-                    handleCloseMenu();
-                    // Aquí puedes agregar lógica para manejar la selección, si es necesario
-                }}
-                selected={category.selected} // Asegúrate de manejar correctamente el estado de selección
+      >
+        {/* Categories */}
+        <Box sx={{ display: 'flex', gap: '20px', marginRight: '20px' }}>
+          {categories.map((category) => (
+            <Button
+              key={category.id}
+              component={Link}
+              to={`/category/${category.id}`}
+              color="inherit"
+              sx={{ 
+                color: '#49708a', 
+                fontWeight: '500', 
+                textTransform: 'uppercase',
+                fontSize: '0.875rem',
+                transition: 'color 0.3s, transform 0.3s',
+                '&:hover': {
+                  color: '#f9f4e3',
+                  transform: 'scale(1.1)',
+                }
+              }}
             >
-                <Link
-                    to={`/category/${category.id}`}
-                    style={{ textDecoration: 'none', color: '#545454', width: '100%' }} // Asegúrate de que el link ocupa todo el ancho
-                >
-                    {category.name}
-                </Link>
-            </MenuItem>
-        ))}
-    </Menu>
+              {category.name}
+            </Button>
+          ))}
+        </Box>
 
-
-        </div>
-        </Toolbar>
+        {/* Most Popular Items Button */}
+        <Button
+          component={Link}
+          to="/most-popular"
+          color="inherit"
+          sx={{ 
+            color: '#4a4a4a', 
+            fontWeight: '500', 
+            textTransform: 'uppercase', 
+            marginLeft: 'auto',
+            fontSize: '0.875rem',
+            transition: 'color 0.3s, transform 0.3s',
+            '&:hover': {
+              color: '#f9f4e3',
+              transform: 'scale(1.1)',
+            }
+          }}
+        >
+          Most Popular Items
+        </Button>
+      </Toolbar>
     </AppBar>
   );
 };

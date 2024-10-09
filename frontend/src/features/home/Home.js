@@ -1,15 +1,18 @@
 import React from 'react';
+import { Box } from '@mui/material'; // Import Box component
 import Navbar from '../../components/Navbar'; 
-import { Container, Typography } from '@mui/material';
 
 const Home = () => {
   return (
-    <div>
-      <Navbar />
-      <Container>
-    
-      </Container>
-    </div>
+    <Box 
+      sx={{ 
+        backgroundColor: '#007e80', // Set the background color
+        minHeight: '100vh', // Ensure it takes full height
+        padding: '20px', // Optional padding for content
+      }}
+    >
+      <Navbar /> {/* Include the Navbar component */}
+    </Box>
   );
 };
 
