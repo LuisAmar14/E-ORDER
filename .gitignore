@@ -1,3 +1,9 @@
+# React build directory
+build/
+
+# Ignore .DS_Store (macOS metadata files)
+.DS_Store
+
 # Logs
 logs
 *.log
