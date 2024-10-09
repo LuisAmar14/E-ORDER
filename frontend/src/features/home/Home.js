@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <Box 
       sx={{ 
-        backgroundColor: '#007e80', // Set the background color
+        backgroundColor: '#545454', // Set the background color
         minHeight: '100vh', // Ensure it takes full height
         padding: '20px', // Optional padding for content
       }}

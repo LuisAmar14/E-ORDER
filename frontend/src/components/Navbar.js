@@ -17,7 +17,7 @@ const Navbar = () => {
     <AppBar 
       position="static" 
       sx={{ 
-        background: '#ebf7f8',
+        background: '#b7cc18',
         boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', 
         borderRadius: '16px', // Add border radius for rounded edges
         overflow: 'hidden' // Ensures the rounded corners are applied correctly
@@ -44,7 +44,7 @@ const Navbar = () => {
           <Typography 
             variant="h1" 
             sx={{ 
-              color: '#49708a', 
+              color: '#2b364a', 
               fontWeight: 'bold',
               fontFamily: 'Arial, sans-serif', 
               letterSpacing: '1px',
@@ -52,13 +52,13 @@ const Navbar = () => {
               paddingBottom: '0', 
               transition: 'color 0.3s',
               '&:hover': {
-                color: '#88abc2'
+                color: '#f9f4e3'
               }
             }}
           >
             E-ORDER
           </Typography>
-          <Typography variant="h6" sx={{ color: '#49708a' }} align="center">
+          <Typography variant="h6" sx={{ color: '#2b364a' }} align="center">
             Your one-stop shop for electronics!
           </Typography>
         </Box>
@@ -119,7 +119,7 @@ const Navbar = () => {
           to="/most-popular"
           color="inherit"
           sx={{ 
-            color: '#4a4a4a', 
+            color: '#49708a', 
             fontWeight: '500', 
             textTransform: 'uppercase', 
             marginLeft: 'auto',
