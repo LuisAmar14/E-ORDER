@@ -26,11 +26,11 @@ Esta es una aplicación web de comercio electrónico desarrollada con **React** 
 
 - **Productos**:
   - `GET /products`: Obtiene los productos más populares (ordenados por número de clicks).
-  - `GET /products/category=Stationery`: Filtra los productos por categoría (por ejemplo, papelería).
+  - `GET /products/category=cellphones`: Filtra los productos por categoría (por ejemplo, celulares).
 
 - **Carrito de Compras**:
-  - `POST /cart?product_id=84848&user_id`: Agrega un producto al carrito del usuario.
-  - `POST /cart?product_id=84848&user_id&quantity=23`: Agrega un producto al carrito con una cantidad específica.
+  - `POST /cart?product_id=2&{user_id}`: Agrega un producto al carrito del usuario.
+  - `POST /cart?product_id=2&user_id&quantity=3`: Agrega un producto al carrito con una cantidad específica.
   - `GET /cart`: Visualiza los productos en el carrito del usuario autenticado.
 
 - **Checkout**:
