@@ -7,7 +7,7 @@ Esta es una aplicación web de comercio electrónico desarrollada con **React** 
 
 ## Características
 - **Frontend en React**: Interfaz moderna y elegante con un diseño responsive, con biblioteca MUI (Material UI).
-- **Backend en Node.js**: Servidor configurado para manejar las solicitudes de la API de Best Buy y una API propia.
+- **Backend en Node.js**: Servidor configurado para manejar las solicitudes de la API de Best Buy.
 - **Base de datos en MongoDB**: Almacena la información extraída de la API, los datos de usuario y datos de los productos.
 - **Autenticación**: Los usuarios pueden registrarse, iniciar sesión y modificar su perfil.
 - **Carrito de compras**: Funcionalidad para añadir y quitar productos del carrito.
