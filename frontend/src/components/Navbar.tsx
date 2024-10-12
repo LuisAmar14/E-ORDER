@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Button, Typography, Box, Badge, Slide } from '@mui/material';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import logo from '../img_rsc/logoSVG.svg';
+import { create } from 'zustand'
+
+
+
 
 // Definimos los tipos para los estados que manejamos
 const Navbar: React.FC = () => {
@@ -19,6 +23,8 @@ const Navbar: React.FC = () => {
     setLastScrollY(currentScrollY);
   };
 
+
+  
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -36,11 +42,10 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <Slide appear={false} direction="down" in={isVisible}>
+    // <Slide appear={false} direction="down" in={isVisible}>
       <AppBar 
         position="static" 
         sx={{ 
-          background: '#0a4b75',
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', 
           borderRadius: '16px', // Add border radius for rounded edges
           overflow: 'hidden' // Ensures the rounded corners are applied correctly
@@ -89,7 +94,7 @@ const Navbar: React.FC = () => {
           {/* Cart and Profile Icons */}
           <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
             <Link to="/cart" style={{ textDecoration: 'none', color: '#4a4a4a' }}>
-              <Badge badgeContent={4} color="primary">
+              <Badge badgeContent={4} color="secondary">
                 <IconButton color="inherit" aria-label="Cart">
                   <FaShoppingCart size={28} />
                 </IconButton>
@@ -158,7 +163,7 @@ const Navbar: React.FC = () => {
           </Button>
         </Toolbar>
       </AppBar>
-    </Slide>
+    // </Slide>
   );
 };
 

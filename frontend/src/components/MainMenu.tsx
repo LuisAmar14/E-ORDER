@@ -29,7 +29,7 @@ interface Product {
 // Datos de ejemplo para los productos
 const sampleProducts: Product[] = [
   { id: 1, name: "Smartphone X", price: 599.99, image: "/placeholder.svg?height=200&width=200&text=Smartphone+X" },
-  { id: 2, name: "Laptop Pro", price: 1299.99, image: "/placeholder.svg?height=200&width=200&text=Laptop+Pro" },
+  { id: 2, name: "Laptop Pro", price: 1299.99, image: "https://ss628.liverpool.com.mx/xl/1143370174.jpg" },
   { id: 3, name: "Wireless Earbuds", price: 149.99, image: "/placeholder.svg?height=200&width=200&text=Wireless+Earbuds" },
   { id: 4, name: "Smart Watch", price: 249.99, image: "/placeholder.svg?height=200&width=200&text=Smart+Watch" },
   { id: 5, name: "4K TV", price: 799.99, image: "/placeholder.svg?height=200&width=200&text=4K+TV" },
@@ -79,7 +79,7 @@ const MainMenu: React.FC = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 0 }}>
+    <Box sx={{ flexGrow: 1, p: 0, m: "30px 10rem 20px 10rem" }}>
       <Grid container spacing={3}>
         {sampleProducts.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product.id}>
@@ -129,6 +129,7 @@ const MainMenu: React.FC = () => {
                 </IconButton>
                 <Button 
                   variant="contained" 
+                  color="secondary"
                   startIcon={<ShoppingCart />}
                   onClick={() => handleAddToCart(product.id)}
                   sx={{ ml: 'auto', mr: 1 }}
