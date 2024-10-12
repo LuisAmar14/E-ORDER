@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Button, Typography, Box, Badge, Slide } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Button, Typography, Box, Badge } from '@mui/material';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import logo from '../img_rsc/logoSVG.svg';
-import { create } from 'zustand'
 
-
-
-
-// Definimos los tipos para los estados que manejamos
 const Navbar: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
@@ -23,8 +18,6 @@ const Navbar: React.FC = () => {
     setLastScrollY(currentScrollY);
   };
 
-
-  
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -32,7 +25,6 @@ const Navbar: React.FC = () => {
     };
   }, [lastScrollY]);
 
-  // Tipamos las categorías
   const categories: { id: string; name: string }[] = [
     { id: 'tv', name: 'TV' },
     { id: 'computers', name: 'Computers' },
@@ -42,19 +34,26 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    // <Slide appear={false} direction="down" in={isVisible}>
+    <Box sx={{margin: '0 20px' }}> {/* Add margin for spacing */}
       <AppBar 
         position="static" 
         sx={{ 
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', 
-          borderRadius: '16px', // Add border radius for rounded edges
-          overflow: 'hidden' // Ensures the rounded corners are applied correctly
+          borderRadius: '20px', 
+          overflow: 'hidden',
+          padding: '10px 0' // Adjust the padding here
         }}
       >
-        {/* Top Row */}
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: '0', minHeight: '60px', alignItems: 'center' }}>
-          
-          {/* Logo */}
+        <Toolbar 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            padding: '0', 
+            minHeight: '60px', 
+            alignItems: 'center',
+            marginTop: '10px' // Add margin here for extra space
+          }}
+        >
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
             <img 
               src={logo} 
@@ -67,7 +66,6 @@ const Navbar: React.FC = () => {
             />
           </Link>
 
-          {/* E-ORDER Title and Tagline */}
           <Box sx={{ textAlign: 'center', flexGrow: 1 }}>
             <Typography 
               variant="h1" 
@@ -91,7 +89,6 @@ const Navbar: React.FC = () => {
             </Typography>
           </Box>
 
-          {/* Cart and Profile Icons */}
           <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
             <Link to="/cart" style={{ textDecoration: 'none', color: '#4a4a4a' }}>
               <Badge badgeContent={4} color="secondary">
@@ -108,15 +105,13 @@ const Navbar: React.FC = () => {
           </Box>
         </Toolbar>
 
-        {/* Bottom Row: Categories and Most Popular Items Button */}
         <Toolbar 
           sx={{ 
             justifyContent: 'flex-start', 
-            borderTop: '2px solid #7b8a84', // Make the line thicker
+            borderTop: '2px solid #7b8a84', 
             padding: '10px 20px' 
           }}
         >
-          {/* Categories */}
           <Box sx={{ display: 'flex', gap: '20px', marginRight: '20px' }}>
             {categories.map((category) => (
               <Button
@@ -125,7 +120,6 @@ const Navbar: React.FC = () => {
                 to={`/category/${category.id}`}
                 color="inherit"
                 sx={{ 
-                  color: '#49708a', 
                   fontWeight: '500', 
                   textTransform: 'uppercase',
                   fontSize: '0.875rem',
@@ -141,7 +135,6 @@ const Navbar: React.FC = () => {
             ))}
           </Box>
 
-          {/* Most Popular Items Button */}
           <Button
             component={Link}
             to="/most-popular"
@@ -163,7 +156,7 @@ const Navbar: React.FC = () => {
           </Button>
         </Toolbar>
       </AppBar>
-    // </Slide>
+    </Box>
   );
 };
 

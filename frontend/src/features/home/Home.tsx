@@ -8,8 +8,9 @@ const Home: React.FC = () => {
     <>
       <Box 
         sx={{ 
-          // minHeight: '100vh', // Puedes comentar esta línea si no es necesario
-          padding: '0', // Elimina padding para que el Navbar se adhiera al borde
+          background: '#f9f3f3', // Make sure this is a string
+          // minHeight: '100vh', // Uncomment if you want it to fill the viewport height
+          padding: '0' // Remove padding for the Navbar to stick to the edge
         }}
       >
         <Navbar /> 

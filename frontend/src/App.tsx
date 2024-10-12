@@ -5,6 +5,7 @@ import SignInSignUp from './features/auth/SignInSignUp';
 import EditProfile from './features/profile/EditProfile';
 import Cart from './features/cart/Cart';
 import Checkout from './features/cart/Checkout';
+import './index.css';
 import MostP from './features/products/MostPopular';
 // Tipamos el componente App como React.FC
 const App: React.FC = () => {

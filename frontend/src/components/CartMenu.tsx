@@ -22,7 +22,6 @@ import { Link } from 'react-router-dom'; // Importar Link
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
   minHeight: '100vh',
-  background: 'linear-gradient(to right, #e0f7fa, #80deea)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -48,6 +47,7 @@ const Title = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
   color: '#00796b',
   textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
+  borderRadius: '40px',
   marginBottom: theme.spacing(2),
 }));
 
@@ -106,7 +106,7 @@ const CartMenu: React.FC = () => {
       <StyledPaper>
         <List>
           {cartItems.map(item => (
-            <ListItem key={item.id} style={{ padding: '16px 0' }}>
+            <ListItem key={item.id} style={{ padding: '30px 0' }}>
               <ListItemText
                 primary={item.name}
                 secondary={`$${item.price.toFixed(2)} x ${item.quantity}`}

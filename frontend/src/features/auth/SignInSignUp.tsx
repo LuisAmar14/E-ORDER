@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
   Container,
   Paper,
@@ -13,7 +14,6 @@ import {
 import { styled } from '@mui/material/styles';
 import logo from '../../img_rsc/logoSVG.svg';
 import { Link } from 'react-router-dom';
-
 
 
 // Estilo personalizado para el Paper
