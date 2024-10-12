@@ -108,7 +108,7 @@ const Navbar: React.FC = () => {
         <Toolbar 
           sx={{ 
             justifyContent: 'flex-start', 
-            borderTop: '2px solid #7b8a84', 
+            borderTop: '2px', 
             padding: '10px 20px' 
           }}
         >
