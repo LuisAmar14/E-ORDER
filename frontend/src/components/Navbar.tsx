@@ -4,9 +4,10 @@ import { AppBar, Toolbar, IconButton, Button, Typography, Box, Badge, Slide } fr
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import logo from '../img_rsc/logoSVG.svg';
 
-const Navbar = () => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+// Definimos los tipos para los estados que manejamos
+const Navbar: React.FC = () => {
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [lastScrollY, setLastScrollY] = useState<number>(0);
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
@@ -25,7 +26,8 @@ const Navbar = () => {
     };
   }, [lastScrollY]);
 
-  const categories = [
+  // Tipamos las categorías
+  const categories: { id: string; name: string }[] = [
     { id: 'tv', name: 'TV' },
     { id: 'computers', name: 'Computers' },
     { id: 'appliances', name: 'Appliances' },
