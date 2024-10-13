@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Button, Typography, Box, Badge } from '@mui/material';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import logo from '../img_rsc/logoSVG.svg';
@@ -7,6 +7,7 @@ import logo from '../img_rsc/logoSVG.svg';
 const Navbar: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
+  const location = useLocation(); // Use location to determine active route
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
@@ -34,14 +35,14 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <Box sx={{margin: '0 20px' }}> {/* Add margin for spacing */}
+    <Box sx={{ margin: '0 20px' }}>
       <AppBar 
         position="static" 
         sx={{ 
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', 
           borderRadius: '20px', 
           overflow: 'hidden',
-          padding: '10px 0' // Adjust the padding here
+          padding: '10px 0'
         }}
       >
         <Toolbar 
@@ -51,7 +52,7 @@ const Navbar: React.FC = () => {
             padding: '0', 
             minHeight: '60px', 
             alignItems: 'center',
-            marginTop: '10px' // Add margin here for extra space
+            marginTop: '10px' 
           }}
         >
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
@@ -134,21 +135,20 @@ const Navbar: React.FC = () => {
               </Button>
             ))}
           </Box>
-
+          
           <Button
             component={Link}
             to="/most-popular"
             color="inherit"
             sx={{ 
-              color: '#49708a', 
-              fontWeight: '500', 
+              color: location.pathname === '/most-popular' ? '#DB6400' : '#2b364a', // Change to black when active
+              fontWeight: location.pathname === '/most-popular' ? 'bold' : '500', // Change font weight when active
               textTransform: 'uppercase', 
               marginLeft: 'auto',
               fontSize: '0.875rem',
-              transition: 'color 0.3s, transform 0.3s',
+              transition: 'color 0.3s, font-weight 0.3s',
               '&:hover': {
                 color: '#f9f4e3',
-                transform: 'scale(1.1)',
               }
             }}
           >

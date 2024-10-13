@@ -12,7 +12,6 @@ import { styled } from '@mui/material/styles';
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
   minHeight: '100vh',
-  background: 'linear-gradient(to right, #f3f4f6, #e2e8f0)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -28,33 +27,38 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
   fontSize: '2rem',
   fontWeight: 'bold',
-  color: '#2b364a',
+  color: '#00796b',
+  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
+  borderRadius: '40px',
   marginBottom: theme.spacing(2),
-  textAlign: 'center',
 }));
 
 const TotalAmount = styled(Typography)(({ theme }) => ({
   fontSize: '1.5rem',
   fontWeight: 'bold',
-  color: '#49708a', // Color de la paleta del navbar
+  color: '#00796b', // Color de la paleta del navbar
   marginBottom: theme.spacing(3),
   textAlign: 'center',
 }));
 
-const CheckoutButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#2b364a', // Color más oscuro de la paleta
-  color: '#fff',
+const CancelButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main, // Use secondary color
+  color: '#fff', // Set text color to white
   '&:hover': {
-    backgroundColor: '#1f2c3a', // Un tono más oscuro
+    backgroundColor: theme.palette.secondary.dark, // Use darker shade for hover
   },
-  marginRight: theme.spacing(2),
 }));
 
-const CancelButton = styled(Button)(({ theme }) => ({
-  borderColor: '#d9534f',
-  color: '#d9534f',
+const CheckoutButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main, // Use primary color
+  color: '#fff',
+  '&:hover': {
+    backgroundColor: theme.palette.primary.dark, // Use darker shade for hover
+  },
 }));
 
 const Checkout: React.FC = () => {
@@ -103,19 +107,20 @@ const Checkout: React.FC = () => {
             margin="normal"
             required
           />
-          <Box mt={3}>
+          <Box mt={3} display="flex" justifyContent="center" gap={2}>
+            <CancelButton
+              variant="contained"
+              onClick={handleCancelPurchase}
+            >
+              Cancel Purchase
+            </CancelButton>
+
             <CheckoutButton
               variant="contained"
               onClick={handleConfirmPayment}
             >
               Confirm Payment
             </CheckoutButton>
-            <CancelButton
-              variant="outlined"
-              onClick={handleCancelPurchase}
-            >
-              Cancel Purchase
-            </CancelButton>
           </Box>
         </Box>
       </StyledPaper>

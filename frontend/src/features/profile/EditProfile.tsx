@@ -12,10 +12,11 @@ import {
 import { styled } from '@mui/material/styles';
 import logo from '../../img_rsc/logoSVG.svg';
 import { Link } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+import PersonIcon from '@mui/icons-material/Person'; // Import the user icon
 
 // Estilos personalizados
 const StyledContainer = styled(Container)(({ theme }) => ({
-  background: '#f0f2f5',
   minHeight: '100vh',
   padding: theme.spacing(4),
   display: 'flex',
@@ -32,24 +33,36 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   borderRadius: '12px',
   width: '100%',
   maxWidth: '500px',
-  backgroundColor: '#ffffff',
 }));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(3),
-  backgroundColor: '#1877f2',
-  color: '#ffffff',
+  backgroundColor: theme.palette.primary.main,
+  color: '#fff',
   '&:hover': {
-    backgroundColor: '#155dbb',
+    backgroundColor: theme.palette.primary,
   },
 }));
 
+const CancelButton = styled(Button)(({ theme }) => ({
+  borderColor: theme.palette.primary.main,
+  color: '#00796b', // Set the text color to white for better contrast
+  borderRadius: '20px', // Adjust this value for roundness
+  backgroundColor: theme.palette.primary.main, // Use the primary color for background
+  '&:hover': {
+    backgroundColor: theme.palette.primary, // Change background color on hover
+  },
+}));
+
+
 const EditProfile: React.FC = () => {
+  const theme = useTheme();
   const [userData, setUserData] = useState({
     username: '',
     password: '',
     confirmPassword: '',
-    address: '',
+    address1: '',
+    address2: '',
     country: '',
   });
 
@@ -86,121 +99,169 @@ const EditProfile: React.FC = () => {
   return (
     <StyledContainer>
       <StyledPaper elevation={6}>
-      <Link to="/"> 
-        <img 
-          src={logo} 
-          alt="E-Order" 
-          style={{ 
-            width: '100%', 
-            maxWidth: '250px', 
-            height: 'auto', 
-            marginBottom: '16px',
-          }} 
-        />
-    </Link>
-        <Typography component="h1" variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: '#1877f2' }}>
+        <Link to="/"> 
+          <img 
+            src={logo} 
+            alt="E-Order" 
+            style={{ 
+              width: '100%', 
+              maxWidth: '250px', 
+              height: 'auto', 
+              marginBottom: '16px',
+            }} 
+          />
+        </Link>
+        
+        {/* User Icon Instead of P */}
+        <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 40, height: 40, marginBottom: '8px' }}>
+          <PersonIcon sx={{ color: '#fff' }} />
+        </Avatar>
+
+        <Typography component="h1" variant="h5" sx={{ mb: 3, fontWeight: 'bold', color: theme.palette.primary.main }}>
           Edit Profile
         </Typography>
+        
         <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <Grid container spacing={2}>
+            {/* Username Section */}
             <Grid item xs={12}>
-              <Button 
+              <CancelButton 
                 variant="outlined" 
                 onClick={() => handleEditToggle('username')}
                 fullWidth
-                sx={{ borderColor: '#1877f2', color: '#1877f2' }}
               >
                 {editFields.username ? 'Cancel' : 'Change Username'}
-              </Button>
+              </CancelButton>
               {editFields.username && (
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  label="Username"
-                  name="username"
-                  value={userData.username}
-                  onChange={handleChange}
-                  margin="normal"
-                />
+                <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
+                  <Grid item xs={12} sm={8} md={6}>
+                    <TextField
+                      variant="outlined"
+                      size="small" // Tamaño pequeño
+                      fullWidth
+                      label="Username"
+                      name="username"
+                      value={userData.username}
+                      onChange={handleChange}
+                      margin="normal"
+                    />
+                  </Grid>
+                </Grid>
               )}
             </Grid>
 
+            {/* Password Section */}
             <Grid item xs={12}>
-              <Button 
+              <CancelButton 
                 variant="outlined" 
                 onClick={() => handleEditToggle('password')}
                 fullWidth
-                sx={{ borderColor: '#1877f2', color: '#1877f2' }}
               >
                 {editFields.password ? 'Cancel' : 'Change Password'}
-              </Button>
+              </CancelButton>
               {editFields.password && (
                 <>
-                  <TextField
-                    variant="outlined"
-                    type="password"
-                    fullWidth
-                    label="New Password"
-                    name="password"
-                    value={userData.password}
-                    onChange={handleChange}
-                    margin="normal"
-                  />
-                  <TextField
-                    variant="outlined"
-                    type="password"
-                    fullWidth
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    value={userData.confirmPassword}
-                    onChange={handleChange}
-                    margin="normal"
-                  />
+                  <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
+                    <Grid item xs={12} sm={8} md={6}>
+                      <TextField
+                        variant="outlined"
+                        size="small" // Tamaño pequeño
+                        type="password"
+                        fullWidth
+                        label="New Password"
+                        name="password"
+                        value={userData.password}
+                        onChange={handleChange}
+                        margin="normal"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container justifyContent="center" sx={{ marginTop: '4px' }}>
+                    <Grid item xs={12} sm={8} md={6}>
+                      <TextField
+                        variant="outlined"
+                        size="small" // Tamaño pequeño
+                        type="password"
+                        fullWidth
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        value={userData.confirmPassword}
+                        onChange={handleChange}
+                        margin="normal"
+                      />
+                    </Grid>
+                  </Grid>
                 </>
               )}
             </Grid>
 
+            {/* Address Section */}
             <Grid item xs={12}>
-              <Button 
+              <CancelButton 
                 variant="outlined" 
                 onClick={() => handleEditToggle('address')}
                 fullWidth
-                sx={{ borderColor: '#1877f2', color: '#1877f2' }}
               >
                 {editFields.address ? 'Cancel' : 'Change Address'}
-              </Button>
+              </CancelButton>
               {editFields.address && (
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  label="Address"
-                  name="address"
-                  value={userData.address}
-                  onChange={handleChange}
-                  margin="normal"
-                />
+                <>
+                  <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
+                    <Grid item xs={12} sm={8} md={6}>
+                      <TextField
+                        variant="outlined"
+                        size="small" // Tamaño pequeño
+                        fullWidth
+                        label="Address 1"
+                        name="address1"
+                        value={userData.address1}
+                        onChange={handleChange}
+                        margin="normal"
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container justifyContent="center" sx={{ marginTop: '4px' }}>
+                    <Grid item xs={12} sm={8} md={6}>
+                      <TextField
+                        variant="outlined"
+                        size="small" // Tamaño pequeño
+                        fullWidth
+                        label="Address 2"
+                        name="address2"
+                        value={userData.address2}
+                        onChange={handleChange}
+                        margin="normal"
+                      />
+                    </Grid>
+                  </Grid>
+                </>
               )}
             </Grid>
 
+            {/* Country Section */}
             <Grid item xs={12}>
-              <Button 
+              <CancelButton 
                 variant="outlined" 
                 onClick={() => handleEditToggle('country')}
                 fullWidth
-                sx={{ borderColor: '#1877f2', color: '#1877f2' }}
               >
                 {editFields.country ? 'Cancel' : 'Change Country'}
-              </Button>
+              </CancelButton>
               {editFields.country && (
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  label="Country"
-                  name="country"
-                  value={userData.country}
-                  onChange={handleChange}
-                  margin="normal"
-                />
+                <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
+                  <Grid item xs={12} sm={8} md={6}>
+                    <TextField
+                      variant="outlined"
+                      size="small" // Tamaño pequeño
+                      fullWidth
+                      label="Country"
+                      name="country"
+                      value={userData.country}
+                      onChange={handleChange}
+                      margin="normal"
+                    />
+                  </Grid>
+                </Grid>
               )}
             </Grid>
           </Grid>
