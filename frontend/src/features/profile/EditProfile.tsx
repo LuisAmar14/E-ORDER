@@ -13,7 +13,7 @@ import { styled } from '@mui/material/styles';
 import logo from '../../img_rsc/logoSVG.svg';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import PersonIcon from '@mui/icons-material/Person'; // Import the user icon
+import PersonIcon from '@mui/icons-material/Person';
 
 // Estilos personalizados
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -46,18 +46,19 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 
 const CancelButton = styled(Button)(({ theme }) => ({
   borderColor: theme.palette.primary.main,
-  color: '#00796b', // Set the text color to white for better contrast
-  borderRadius: '20px', // Adjust this value for roundness
-  backgroundColor: theme.palette.primary.main, // Use the primary color for background
+  color: '#00796b',
+  borderRadius: '20px',
+  backgroundColor: theme.palette.primary.main,
   '&:hover': {
-    backgroundColor: theme.palette.primary, // Change background color on hover
+    backgroundColor: theme.palette.primary,
   },
 }));
-
 
 const EditProfile: React.FC = () => {
   const theme = useTheme();
   const [userData, setUserData] = useState({
+    first_name: '',
+    last_name: '',
     username: '',
     password: '',
     confirmPassword: '',
@@ -67,13 +68,15 @@ const EditProfile: React.FC = () => {
   });
 
   const [editFields, setEditFields] = useState({
+    first_name: false,
+    last_name: false,
     username: false,
     password: false,
     address: false,
     country: false,
   });
 
-  type EditableFields = 'username' | 'password' | 'address' | 'country';
+  type EditableFields = 'first_name' | 'last_name' | 'username' | 'password' | 'address' | 'country';
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -112,7 +115,6 @@ const EditProfile: React.FC = () => {
           />
         </Link>
         
-        {/* User Icon Instead of P */}
         <Avatar sx={{ bgcolor: theme.palette.primary.main, width: 40, height: 40, marginBottom: '8px' }}>
           <PersonIcon sx={{ color: '#fff' }} />
         </Avatar>
@@ -123,6 +125,61 @@ const EditProfile: React.FC = () => {
         
         <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <Grid container spacing={2}>
+
+            {/* First Name Section */}
+            <Grid item xs={12}>
+              <CancelButton 
+                variant="outlined" 
+                onClick={() => handleEditToggle('first_name')}
+                fullWidth
+              >
+                {editFields.first_name ? 'Cancel' : 'Change First Name'}
+              </CancelButton>
+              {editFields.first_name && (
+                <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
+                  <Grid item xs={12} sm={8} md={6}>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      label="First Name"
+                      name="first_name"
+                      value={userData.first_name}
+                      onChange={handleChange}
+                      margin="normal"
+                    />
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+
+            {/* Last Name Section */}
+            <Grid item xs={12}>
+              <CancelButton 
+                variant="outlined" 
+                onClick={() => handleEditToggle('last_name')}
+                fullWidth
+              >
+                {editFields.last_name ? 'Cancel' : 'Change Last Name'}
+              </CancelButton>
+              {editFields.last_name && (
+                <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
+                  <Grid item xs={12} sm={8} md={6}>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      label="Last Name"
+                      name="last_name"
+                      value={userData.last_name}
+                      onChange={handleChange}
+                      margin="normal"
+                    />
+                  </Grid>
+                </Grid>
+              )}
+            </Grid>
+
             {/* Username Section */}
             <Grid item xs={12}>
               <CancelButton 
@@ -137,7 +194,7 @@ const EditProfile: React.FC = () => {
                   <Grid item xs={12} sm={8} md={6}>
                     <TextField
                       variant="outlined"
-                      size="small" // Tamaño pequeño
+                      size="small"
                       fullWidth
                       label="Username"
                       name="username"
@@ -165,7 +222,7 @@ const EditProfile: React.FC = () => {
                     <Grid item xs={12} sm={8} md={6}>
                       <TextField
                         variant="outlined"
-                        size="small" // Tamaño pequeño
+                        size="small"
                         type="password"
                         fullWidth
                         label="New Password"
@@ -180,7 +237,7 @@ const EditProfile: React.FC = () => {
                     <Grid item xs={12} sm={8} md={6}>
                       <TextField
                         variant="outlined"
-                        size="small" // Tamaño pequeño
+                        size="small"
                         type="password"
                         fullWidth
                         label="Confirm Password"
@@ -210,7 +267,7 @@ const EditProfile: React.FC = () => {
                     <Grid item xs={12} sm={8} md={6}>
                       <TextField
                         variant="outlined"
-                        size="small" // Tamaño pequeño
+                        size="small"
                         fullWidth
                         label="Address 1"
                         name="address1"
@@ -224,7 +281,7 @@ const EditProfile: React.FC = () => {
                     <Grid item xs={12} sm={8} md={6}>
                       <TextField
                         variant="outlined"
-                        size="small" // Tamaño pequeño
+                        size="small"
                         fullWidth
                         label="Address 2"
                         name="address2"
@@ -252,7 +309,7 @@ const EditProfile: React.FC = () => {
                   <Grid item xs={12} sm={8} md={6}>
                     <TextField
                       variant="outlined"
-                      size="small" // Tamaño pequeño
+                      size="small"
                       fullWidth
                       label="Country"
                       name="country"
@@ -264,6 +321,7 @@ const EditProfile: React.FC = () => {
                 </Grid>
               )}
             </Grid>
+
           </Grid>
           <SubmitButton
             type="submit"

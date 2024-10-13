@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import {
   Container,
   Paper,
@@ -15,32 +14,31 @@ import { styled } from '@mui/material/styles';
 import logo from '../../img_rsc/logoSVG.svg';
 import { Link } from 'react-router-dom';
 
-
 // Estilo personalizado para el Paper
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  marginTop: theme.spacing(8), // Margen superior
+  marginTop: theme.spacing(8),
   display: 'flex',
-  flexDirection: 'column', // Dirección de flex en columna
-  alignItems: 'center', // Centramos los elementos
-  padding: theme.spacing(4), // Padding interno
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(4),
 }));
 
 // Estilo para el formulario
 const StyledForm = styled('form')(({ theme }) => ({
-  width: '100%', // Ocupa todo el ancho
-  marginTop: theme.spacing(3), // Margen superior
+  width: '100%',
+  marginTop: theme.spacing(3),
 }));
 
 // Botón de envío estilizado
 const SubmitButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(3, 0, 2), // Margen superior e inferior
+  margin: theme.spacing(3, 0, 2),
 }));
 
 // Props para el panel de las pestañas
 interface TabPanelProps {
-  children?: React.ReactNode; // Contenido del panel
-  index: number; // Índice del panel
-  value: number; // Valor actual de las pestañas
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
 // Componente TabPanel para manejar las pestañas
@@ -49,13 +47,13 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <div
-      role="tabpanel" // Papel para accesibilidad
-      hidden={value !== index} // Oculta el panel si no es el actual
-      id={`auth-tabpanel-${index}`} // ID para accesibilidad
-      aria-labelledby={`auth-tab-${index}`} // Label para accesibilidad
+      role="tabpanel"
+      hidden={value !== index}
+      id={`auth-tabpanel-${index}`}
+      aria-labelledby={`auth-tab-${index}`}
       {...other}
     >
-      {value === index && ( // Muestra el contenido si es el panel activo
+      {value === index && (
         <Box sx={{ p: 3 }}>
           {children}
         </Box>
@@ -67,39 +65,41 @@ function TabPanel(props: TabPanelProps) {
 // Función para las propiedades de accesibilidad de las pestañas
 function a11yProps(index: number) {
   return {
-    id: `auth-tab-${index}`, // ID para la pestaña
-    'aria-controls': `auth-tabpanel-${index}`, // Controla el panel correspondiente
+    id: `auth-tab-${index}`,
+    'aria-controls': `auth-tabpanel-${index}`,
   };
 }
 
 // Componente principal de autenticación
 const AuthPage: React.FC = () => {
-  const [value, setValue] = useState(0); // Estado para el valor de la pestaña activa
-  const [signInData, setSignInData] = useState({ // Estado para los datos de inicio de sesión
+  const [value, setValue] = useState(0);
+  const [signInData, setSignInData] = useState({
     username: '',
     password: '',
   });
-  const [signUpData, setSignUpData] = useState({ // Estado para los datos de registro
+  const [signUpData, setSignUpData] = useState({
     first_name: '',
     last_name: '',
     user_name: '',
     country: '',
     email: '',
     password: '',
-    address: '',
+    confirmPassword: '',
+    address1: '',
+    address2: '',
   });
 
   // Maneja el cambio de pestañas
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue); // Actualiza el valor de la pestaña activa
+    setValue(newValue);
   };
 
   // Maneja los cambios en el formulario de inicio de sesión
   const handleSignInChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target; // Obtiene el nombre y valor del campo
+    const { name, value } = event.target;
     setSignInData(prevData => ({
       ...prevData,
-      [name]: value, // Actualiza el estado con el nuevo valor
+      [name]: value,
     }));
   };
 
@@ -108,43 +108,47 @@ const AuthPage: React.FC = () => {
     const { name, value } = event.target;
     setSignUpData(prevData => ({
       ...prevData,
-      [name]: value, // Actualiza el estado con el nuevo valor
+      [name]: value,
     }));
   };
 
   // Maneja el envío del formulario de inicio de sesión
   const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Previene el comportamiento por defecto
-    console.log('Sign In:', signInData); // Muestra los datos en la consola
+    event.preventDefault();
+    console.log('Sign In:', signInData);
     // Implementa la lógica de inicio de sesión aquí
   };
 
   // Maneja el envío del formulario de registro
   const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Previene el comportamiento por defecto
-    console.log('Sign Up:', signUpData); // Muestra los datos en la consola
+    event.preventDefault();
+    if (signUpData.password !== signUpData.confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+    console.log('Sign Up:', signUpData);
     // Implementa la lógica de registro aquí
   };
 
   return (
-    <Container component="main" maxWidth="sm"> {/* Contenedor principal */}
-      <StyledPaper elevation={6}> {/* Papel con estilo */}
-      <Link to="/"> 
-      <img 
-        src={logo} 
-        alt="E-Order" 
-        style={{ 
-          width: '100%', // Asegura que la imagen use el 100% del contenedor
-          maxWidth: '250px', // Limita el tamaño máximo de la imagen
-          height: 'auto', 
-        }} 
-        />
+    <Container component="main" maxWidth="sm">
+      <StyledPaper elevation={6}>
+        <Link to="/">
+          <img 
+            src={logo} 
+            alt="E-Order" 
+            style={{ 
+              width: '100%', 
+              maxWidth: '250px', 
+              height: 'auto', 
+            }} 
+          />
         </Link>
-        <Tabs value={value} onChange={handleChange} aria-label="auth tabs"> {/* Pestañas de inicio de sesión y registro */}
-          <Tab label="Sign In" {...a11yProps(0)} /> {/* Pestaña de inicio de sesión */}
-          <Tab label="Sign Up" {...a11yProps(1)} /> {/* Pestaña de registro */}
+        <Tabs value={value} onChange={handleChange} aria-label="auth tabs">
+          <Tab label="Sign In" {...a11yProps(0)} />
+          <Tab label="Sign Up" {...a11yProps(1)} />
         </Tabs>
-        <TabPanel value={value} index={0}> {/* Panel de inicio de sesión */}
+        <TabPanel value={value} index={0}>
           <StyledForm onSubmit={handleSignIn}>
             <TextField
               variant="outlined"
@@ -182,10 +186,10 @@ const AuthPage: React.FC = () => {
             </SubmitButton>
           </StyledForm>
         </TabPanel>
-        <TabPanel value={value} index={1}> {/* Panel de registro */}
+        <TabPanel value={value} index={1}>
           <StyledForm onSubmit={handleSignUp}>
-            <Grid container spacing={2}> {/* Cuadrícula para los campos del formulario */}
-              <Grid item xs={12} sm={6}> {/* Primer campo: Nombre */}
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
                   name="first_name"
@@ -199,7 +203,7 @@ const AuthPage: React.FC = () => {
                   onChange={handleSignUpChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}> {/* Segundo campo: Apellido */}
+              <Grid item xs={12} sm={6}>
                 <TextField
                   variant="outlined"
                   required
@@ -212,7 +216,7 @@ const AuthPage: React.FC = () => {
                   onChange={handleSignUpChange}
                 />
               </Grid>
-              <Grid item xs={12}> {/* Campo: Nombre de usuario */}
+              <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   required
@@ -225,7 +229,7 @@ const AuthPage: React.FC = () => {
                   onChange={handleSignUpChange}
                 />
               </Grid>
-              <Grid item xs={12}> {/* Campo: País */}
+              <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   required
@@ -238,20 +242,45 @@ const AuthPage: React.FC = () => {
                   onChange={handleSignUpChange}
                 />
               </Grid>
-              <Grid item xs={12}> {/* Campo: Email */}
+              <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Email"
                   name="email"
                   autoComplete="email"
                   value={signUpData.email}
                   onChange={handleSignUpChange}
                 />
               </Grid>
-              <Grid item xs={12}> {/* Campo: Contraseña */}
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="address1"
+                  label="Address 1"
+                  name="address1"
+                  autoComplete="address-line1"
+                  value={signUpData.address1}
+                  onChange={handleSignUpChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  id="address2"
+                  label="Address 2"
+                  name="address2"
+                  autoComplete="address-line2"
+                  value={signUpData.address2}
+                  onChange={handleSignUpChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   required
@@ -265,16 +294,17 @@ const AuthPage: React.FC = () => {
                   onChange={handleSignUpChange}
                 />
               </Grid>
-              <Grid item xs={12}> {/* Campo: Dirección */}
+              <Grid item xs={12}>
                 <TextField
                   variant="outlined"
                   required
                   fullWidth
-                  name="address"
-                  label="Address"
-                  id="address"
-                  autoComplete="street-address"
-                  value={signUpData.address}
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="new-password"
+                  value={signUpData.confirmPassword}
                   onChange={handleSignUpChange}
                 />
               </Grid>
