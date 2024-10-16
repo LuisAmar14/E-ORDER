@@ -57,8 +57,6 @@ const CancelButton = styled(Button)(({ theme }) => ({
 const EditProfile: React.FC = () => {
   const theme = useTheme();
   const [userData, setUserData] = useState({
-    first_name: '',
-    last_name: '',
     username: '',
     password: '',
     confirmPassword: '',
@@ -68,15 +66,13 @@ const EditProfile: React.FC = () => {
   });
 
   const [editFields, setEditFields] = useState({
-    first_name: false,
-    last_name: false,
     username: false,
     password: false,
     address: false,
     country: false,
   });
 
-  type EditableFields = 'first_name' | 'last_name' | 'username' | 'password' | 'address' | 'country';
+  type EditableFields = 'username' | 'password' | 'address' | 'country';
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -125,60 +121,6 @@ const EditProfile: React.FC = () => {
         
         <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <Grid container spacing={2}>
-
-            {/* First Name Section */}
-            <Grid item xs={12}>
-              <CancelButton 
-                variant="outlined" 
-                onClick={() => handleEditToggle('first_name')}
-                fullWidth
-              >
-                {editFields.first_name ? 'Cancel' : 'Change First Name'}
-              </CancelButton>
-              {editFields.first_name && (
-                <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
-                  <Grid item xs={12} sm={8} md={6}>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      label="First Name"
-                      name="first_name"
-                      value={userData.first_name}
-                      onChange={handleChange}
-                      margin="normal"
-                    />
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
-
-            {/* Last Name Section */}
-            <Grid item xs={12}>
-              <CancelButton 
-                variant="outlined" 
-                onClick={() => handleEditToggle('last_name')}
-                fullWidth
-              >
-                {editFields.last_name ? 'Cancel' : 'Change Last Name'}
-              </CancelButton>
-              {editFields.last_name && (
-                <Grid container justifyContent="center" sx={{ marginTop: '8px' }}>
-                  <Grid item xs={12} sm={8} md={6}>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      label="Last Name"
-                      name="last_name"
-                      value={userData.last_name}
-                      onChange={handleChange}
-                      margin="normal"
-                    />
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
 
             {/* Username Section */}
             <Grid item xs={12}>
