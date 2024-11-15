@@ -8,7 +8,7 @@ Para acceder a los endpoints protegidos, el usuario debe autenticarse utilizando
 
 ## Endpoints
 
-### `POST /login`
+### `POST /signin`
 Permite a un usuario iniciar sesión.
 
 #### Parámetros
@@ -18,7 +18,7 @@ Permite a un usuario iniciar sesión.
   
 #### Ejemplo de solicitud
 
-POST http://api.e-order.com/login \
+POST http://api.e-order.com/profile/signin \
 {
   "username": "Luis_Amar",
   "password": "hola123"
@@ -34,7 +34,7 @@ POST http://api.e-order.com/login \
 "token": "Nombre de usuario o contraseña incorrecta"
 }
 
-### `POST /register`
+### `POST /signin`
 Registra un nuevo usuario.
 
 #### Parámetros
@@ -48,7 +48,7 @@ Registra un nuevo usuario.
   - `address`: (string) Domicilio.
 #### Ejemplo de solicitud
 
-POST http://api.e-order.com/register
+POST http://api.e-order.com/profile/signin
 {
   "first_name": "Luis",
   "last_name": "Amar",
@@ -86,7 +86,7 @@ Modifica las credenciales del usuario.
   - `password`: (string) Nueva contraseña del usuario (opcional).
 
 #### Ejemplo de solicitud
-POST http://api.e-order.com/user/{id}
+POST http://api.e-order.com/profile/edit/{id}
 {
   "user_name": "amar_luis",
   "country": "USA",
@@ -110,7 +110,7 @@ POST http://api.e-order.com/user/{id}
 Obtiene una lista de los productos más populares.
 
 #### Ejemplo de solicitud
-GET http://api.e-order.com/products
+GET http://api.e-order.com/most-popular
 
 
 #### Respuesta
