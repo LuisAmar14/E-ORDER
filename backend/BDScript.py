@@ -75,6 +75,10 @@ json_to_firebase(json_obj, COLLECTION_NAME)
 
 
 
+#usuarios bd 
+#crear endpoint de get products para el front end 
+#backend crear endpoints definidos:cart/get/post/etc
+#fontend llama a todos los endpoints del backend desde distintos botones
 
 
 
