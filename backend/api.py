@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 ''' CONSTANTS '''
 CERTIFICATE_PATH = 'C:\\Users\\yoall\\OneDrive\\Documents\\GitHub\\E-ORDER\\backend\\eorder-db-firebase-adminsdk-drxxe-a87c5bdb7a.json'
@@ -15,11 +16,78 @@ db = firestore.client()
 
 ''' COLLECTIONS / TABLAS '''
 products_ref = db.collection('Products')#apuntador a la collection products
+users_ref = db.collection('Users')
 #falta esto cuando agregues la BD en BDScipt
 #users_ref=db.collection('Userss')
 
 ''' ENDPOINTS '''
-@app.route('/add', methods=['POST'])
+#POST USER- agregar y traer usuario
+@app.route('/User', methods=['POST', 'GET'])
+def createuser():
+    try:
+        if request.method == 'GET': 
+            user_id = request.args.get('ID')
+            if user_id:
+                todo = users_ref.document(user_id).get()
+                return jsonify(todo.to_dict()), 200
+
+        elif request.method == 'POST': 
+            user_data = request.json
+            
+            # Add the user data and let Firebase automatically generate the document ID
+            result = users_ref.add(user_data)
+            
+            # Access the second element of the tuple (the DocumentReference)
+            new_user_ref = result[1]
+            
+            # Return the response with the correct document ID
+            return jsonify({
+                "success": True, 
+                "id": new_user_ref.id,  # Firebase-generated document ID
+                "user_id": user_data.get('ID')  # Manually specified user ID in the document
+            }), 200
+        else:
+            return jsonify({"Message": "No existe endpoint"}), 200
+    except Exception as e:
+        return f"An Error Occured: {e}"
+    
+#PUT USER- Modificar usuario
+@app.route('/User/<user_id>', methods=['PUT'])
+def update_user(user_id):
+    """
+    Update user credentials (like email, password) in Firestore
+    :param user_id: The ID of the user to update
+    :return: Success or error response
+    """
+    try:
+        user_data = request.json  # The updated user data from the request
+
+        # Fetch the user's document by ID
+        user_ref = users_ref.document(user_id)
+        user_doc = user_ref.get()
+
+        # Check if the user exists
+        if not user_doc.exists:
+            return jsonify({"error": "User not found"}), 404
+
+        # Update the user's data in Firestore
+        user_ref.update(user_data)
+
+        return jsonify({
+            "success": True,
+            "message": "User updated successfully",
+            "updated_data": user_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
+
+        
+
+    
+#ESTO ES DEL EJEMPLO
+
+@app.route('/add', methods=['POST']) #ignora, esto es un ejemplo
 def create():
     """
         create() : Add document to Firestore collection with request body
@@ -32,28 +100,10 @@ def create():
         return jsonify({"success": True}), 200
     except Exception as e:
         return f"An Error Occured: {e}"
+    
 
-@app.route('/products', methods=['GET'])
-def read():
-    """
-        read() : Fetches documents from Firestore collection as JSON
-        todo : Return document that matches query ID
-        all_todos : Return all documents
-    """
-    try:
-      # localhost:8080/products => trae todos los productos de la coleccion
-      # localhost:8080/products?sku=478564 => trae solo un producto
 
-        # Check if ID was passed to URL query
-        product_id = request.args.get('sku')    
-        if product_id:
-            todo = products_ref.document(product_id).get()
-            return jsonify(todo.to_dict()), 200
-        else:
-            all_products = [doc.to_dict() for doc in products_ref.stream()]
-            return jsonify(all_products), 200
-    except Exception as e:
-        return f"An Error Occured: {e}"
+
 @app.route('/update', methods=['POST', 'PUT'])
 def update():
     """
@@ -67,6 +117,14 @@ def update():
         return jsonify({"success": True}), 200
     except Exception as e:
         return f"An Error Occured: {e}"
+    
+
+
+
+
+
+
+
 
 @app.route('/delete', methods=['GET', 'DELETE'])
 def delete():

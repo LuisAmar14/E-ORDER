@@ -16,7 +16,11 @@ import re
 
 ''' CONSTANTS '''
 COLLECTION_NAME = "Products"
-CSV_DB = './Products.csv'
+CSV_DB = './products (2).csv'
+
+#COLLECTION_NAME_Users= "Users"
+#CSV_DB_Users = './Users.csv'
+
 CERTIFICATE_PATH = 'C:\\Users\\yoall\\OneDrive\\Documents\\GitHub\\E-ORDER\\backend\\eorder-db-firebase-adminsdk-drxxe-a87c5bdb7a.json'
 
 ''' CREDENTIALS '''
@@ -24,12 +28,13 @@ cred = credentials.Certificate(CERTIFICATE_PATH)
 app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-''' FIREBASE FUNCTIONS '''
-def json_to_firebase(json_object, firebase_collection_name):
+''' FIREBASE FUNCTIONS PRODUCTS'''
+def json_to_firebase(json_object, firebase_collection_name): 
     collection = db.collection(firebase_collection_name)
     for obj in json_object:
         doc_ref = collection.document()
         doc_ref.set(obj)
+
 
 ''' FUNCTIONS '''
 def parse_csv_to_json(csv_filepath, json_filepath="", count_stop=-1):
@@ -49,6 +54,7 @@ def parse_csv_to_json(csv_filepath, json_filepath="", count_stop=-1):
                 ####### process rows #######
                 row["Price"] = float(row["Price"])
                 row["SKU"] = int(row["SKU"])
+                row["inventory"] = int(row["inventory"])
 
                 # add row to array
                 json_array.append(row)
@@ -72,6 +78,11 @@ def parse_csv_to_json(csv_filepath, json_filepath="", count_stop=-1):
 ''' MAIN '''
 json_obj = parse_csv_to_json(CSV_DB)
 json_to_firebase(json_obj, COLLECTION_NAME)
+
+#json_obj = parse_csv_to_json(CSV_DB_Users)
+#json_to_firebase(json_obj, COLLECTION_NAME_Users)
+
+
 
 
 
