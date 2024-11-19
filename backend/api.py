@@ -18,6 +18,7 @@ db = firestore.client()
 products_ref = db.collection('Products')#apuntador a la collection products
 users_ref = db.collection('Users')
 cart_ref=db.collection('ShoppingCart')
+card_ref=db.collection('Checkout')
 #falta esto cuando agregues la BD en BDScipt
 
 
@@ -244,16 +245,40 @@ def delete_cart_items():
 
 
 '''---------------------------CHECKOUT---------------------------'''
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    try:
+        # Retrieve the user_id from the request body
+        user_id = request.json.get('userID')
+        
+        if not user_id:
+            return jsonify({"message": "User ID is required"}), 400
+        
+        # Check if the user already has a checkout document
+        checkout_ref = card_ref.document(user_id)
+        checkout_doc = checkout_ref.get()
 
+        if checkout_doc.exists:
+            return jsonify({"message": "Checkout already completed for this user"}), 400
+        
+        # If no checkout data exists, add the checkout data
+        checkout_data = {
+            "First_Name": request.json.get('First_Name'),
+            "Last_Name": request.json.get('Last_Name'),
+            "Number": request.json.get('Number'),
+            "Expiry": request.json.get('Expiry'),
+            "CVV": request.json.get('CVV'),
+            "Total": request.json.get('Total'),
+            "userID": user_id
+        }
 
+        # Add the data to the Checkout collection
+        card_ref.document(user_id).set(checkout_data)
+        
+        return jsonify({"success": True, "message": "Checkout data saved successfully"}), 200
 
-
-
-
-
-
-
-
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
 
 
 
