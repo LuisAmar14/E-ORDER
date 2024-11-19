@@ -15,8 +15,8 @@ import csv
 import re
 
 ''' CONSTANTS '''
-COLLECTION_NAME = "Products"
-CSV_DB = './products (2).csv'
+COLLECTION_NAME = "ShoppingCart"
+CSV_DB = './Cart.csv'
 
 #COLLECTION_NAME_Users= "Users"
 #CSV_DB_Users = './Users.csv'
