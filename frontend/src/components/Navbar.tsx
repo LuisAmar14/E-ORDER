@@ -135,25 +135,6 @@ const Navbar: React.FC = () => {
               </Button>
             ))}
           </Box>
-          
-          <Button
-            component={Link}
-            to="/most-popular"
-            color="inherit"
-            sx={{ 
-              color: location.pathname === '/most-popular' ? '#DB6400' : '#2b364a', // Change to black when active
-              fontWeight: location.pathname === '/most-popular' ? 'bold' : '500', // Change font weight when active
-              textTransform: 'uppercase', 
-              marginLeft: 'auto',
-              fontSize: '0.875rem',
-              transition: 'color 0.3s, font-weight 0.3s',
-              '&:hover': {
-                color: '#f9f4e3',
-              }
-            }}
-          >
-            Most Popular Items
-          </Button>
         </Toolbar>
       </AppBar>
     </Box>

@@ -18,10 +18,11 @@ import re
 COLLECTION_NAME = "ShoppingCart"
 CSV_DB = './Cart.csv'
 
+CERTIFICATE_PATH = 'C:\\Escritorio\\firebase-bd.json'
 #COLLECTION_NAME_Users= "Users"
 #CSV_DB_Users = './Users.csv'
 
-CERTIFICATE_PATH = 'C:\\Users\\yoall\\OneDrive\\Documents\\GitHub\\E-ORDER\\backend\\eorder-db-firebase-adminsdk-drxxe-a87c5bdb7a.json'
+
 
 ''' CREDENTIALS '''
 cred = credentials.Certificate(CERTIFICATE_PATH)

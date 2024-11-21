@@ -2,13 +2,14 @@ import os
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
 from google.cloud.firestore_v1.base_query import FieldFilter
-
+from flask_cors import CORS
 ''' CONSTANTS '''
-CERTIFICATE_PATH = 'C:\\Users\\yoall\\OneDrive\\Documents\\GitHub\\E-ORDER\\backend\\eorder-db-firebase-adminsdk-drxxe-a87c5bdb7a.json'
+CERTIFICATE_PATH = 'C:\\Escritorio\\firebase-bd.json'
 
 # Initialize Flask App, libreria que ayuda a hacer apis usando python
 app = Flask(__name__)
 
+CORS(app) 
 # Initialize Firestore DB
 cred = credentials.Certificate(CERTIFICATE_PATH)
 default_app = initialize_app(cred)
