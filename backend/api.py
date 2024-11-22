@@ -30,11 +30,10 @@ card_ref=db.collection('Checkout')
 def modifyuser():
     try:
         if request.method == 'GET': 
-            user_id = request.args.get('ID')
-            if user_id:
-                todo = users_ref.document(user_id).get()
+            user_name = request.args.get('user_name')
+            if user_name:
+                todo = users_ref.document(user_name).get()
                 return jsonify(todo.to_dict()), 200
-
         elif request.method == 'POST': 
             user_data = request.json
 
@@ -87,6 +86,64 @@ def update_user(user_id):
 
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
+
+@app.route('/UserByUsername', methods=['GET'])
+def get_user_by_username():
+    """
+    Retrieve a user by their user_name from Firestore.
+    :return: JSON response with the user's data or an error message.
+    """
+    try:
+        # Get the 'user_name' from the query parameters
+        user_name = request.args.get('user_name')
+
+        if not user_name:
+            return jsonify({"error": "user_name parameter is required"}), 400
+
+        # Query Firestore for the document where user_name matches
+        query = users_ref.where('user_name', '==', user_name).stream()
+        
+        # Get the first matching document
+        user = next(query, None)
+
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
+
+        # Convert the document to a dictionary
+        user_data = user.to_dict()
+        user_data['ID'] = user.id  # Include the document ID
+
+        return jsonify({
+            "success": True,
+            "user": user_data
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
+
+@app.route('/Users', methods=['GET'])
+def get_all_users():
+    """
+    Retrieve all user documents from Firestore
+    :return: JSON response with all users or an error message
+    """
+    try:
+        users = []  # List to store all user documents
+        all_users = users_ref.stream()  # Retrieve all user documents from Firestore
+        
+        # Iterate over all user documents and append them to the list
+        for user_doc in all_users:
+            user_data = user_doc.to_dict()
+            user_data['ID'] = user_doc.id  # Add document ID if not already present
+            users.append(user_data)
+        
+        return jsonify({
+            "success": True,
+            "users": users
+        }), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {e}"}), 500
+
 '''---------------------------PRODUCTS---------------------------'''
 @app.route('/products', methods=['GET'])
 def read():

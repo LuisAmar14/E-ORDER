@@ -20,16 +20,52 @@ const SignIn: React.FC<SignInProps> = ({ onSubmit }) => {
     password: '',
   });
 
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setSignInData(prevData => ({
+    setSignInData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
+  
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  // Función para verificar la existencia del usuario y la contraseña
+  const getUserByUsername = async (username: string) => {
+    try {
+      const response = await fetch(`http://192.168.1.69:8080/UserByUsername?user_name=${username}`);
+      if (!response.ok) {
+        throw new Error('User not found');
+      }
+  
+      const data = await response.json();
+      return data.user; // Aquí tienes los datos del usuario
+    } catch (error) {
+      console.error(error);
+      return null; // El usuario no fue encontrado o hubo un error
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  
+    const { username, password } = signInData;
+  
+    const user = await getUserByUsername(username);
+    if (!user) {
+      alert("Usuario no encontrado");
+      return;
+    }
+  
+    if (user.password !== password) {
+      alert("Contraseña incorrecta");
+      return;
+    }
+  
+    // Si la contraseña es correcta, proceder al siguiente paso
+    alert("Usuario valido");
     onSubmit(signInData);
   };
 
@@ -61,13 +97,17 @@ const SignIn: React.FC<SignInProps> = ({ onSubmit }) => {
         value={signInData.password}
         onChange={handleChange}
       />
+      {errorMessage && (
+        <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>
+      )}
       <SubmitButton
         type="submit"
         fullWidth
         variant="contained"
         color="primary"
+        disabled={isSubmitting}
       >
-        Sign In
+        {isSubmitting ? 'Signing In...' : 'Sign In'}
       </SubmitButton>
     </StyledForm>
   );

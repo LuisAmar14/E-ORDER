@@ -25,11 +25,11 @@ interface Product {
   url: string;
   Description: string;
   inventory: number;
-  Category: string; // Asegúrate de que los productos tengan esta propiedad.
+  Category: string;
 }
 
 interface MainMenuProps {
-  Category?: string; // Prop opcional para filtrar productos por categoría
+  Category?: string;
 }
 
 const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
@@ -45,12 +45,9 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
       try {
         const response = await fetch('http://192.168.1.69:8080/products');
         const data = await response.json();
-        
-        // Filtrar productos si se proporciona una categoría
         const filteredProducts = Category
           ? data.filter((product: Product) => product.Category === Category)
           : data;
-
         setProducts(filteredProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -165,36 +162,38 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
                 <Typography gutterBottom variant="h5" component="div">
                   {product.Name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+              </CardContent>
+              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', p: 2 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 'bold', alignSelf: 'flex-end' }}>
                   ${product.Price.toFixed(2)}
                 </Typography>
-              </CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                <IconButton
-                  aria-label="reduce quantity"
-                  onClick={() => handleQuantityChange(product.SKU, -1)}
-                  disabled={!cart[product.SKU]}
-                >
-                  <Remove />
-                </IconButton>
-                <Typography sx={{ mx: 1 }}>{cart[product.SKU] || 0}</Typography>
-                <IconButton
-                  aria-label="increase quantity"
-                  onClick={() => handleQuantityChange(product.SKU, 1)}
-                  disabled={product.inventory <= (cart[product.SKU] || 0)}
-                >
-                  <Add />
-                </IconButton>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<ShoppingCart />}
-                  onClick={() => handleAddToCart(product.SKU)}
-                  disabled={product.inventory === 0}
-                  sx={{ ml: 'auto', mr: 1 }}
-                >
-                  Add to Cart
-                </Button>
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                  <IconButton
+                    aria-label="reduce quantity"
+                    onClick={() => handleQuantityChange(product.SKU, -1)}
+                    disabled={!cart[product.SKU]}
+                  >
+                    <Remove />
+                  </IconButton>
+                  <Typography sx={{ mx: 1 }}>{cart[product.SKU] || 0}</Typography>
+                  <IconButton
+                    aria-label="increase quantity"
+                    onClick={() => handleQuantityChange(product.SKU, 1)}
+                    disabled={product.inventory <= (cart[product.SKU] || 0)}
+                  >
+                    <Add />
+                  </IconButton>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<ShoppingCart />}
+                    onClick={() => handleAddToCart(product.SKU)}
+                    disabled={product.inventory === 0}
+                    sx={{ ml: 'auto', mr: 1 }}
+                  >
+                    Add to Cart
+                  </Button>
+                </Box>
               </Box>
             </Card>
           </Grid>

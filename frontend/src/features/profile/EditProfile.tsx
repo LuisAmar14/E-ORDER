@@ -60,8 +60,7 @@ const EditProfile: React.FC = () => {
     username: '',
     password: '',
     confirmPassword: '',
-    address1: '',
-    address2: '',
+    address: '',
     country: '',
   });
 
@@ -212,22 +211,8 @@ const EditProfile: React.FC = () => {
                         size="small"
                         fullWidth
                         label="Address 1"
-                        name="address1"
-                        value={userData.address1}
-                        onChange={handleChange}
-                        margin="normal"
-                      />
-                    </Grid>
-                  </Grid>
-                  <Grid container justifyContent="center" sx={{ marginTop: '4px' }}>
-                    <Grid item xs={12} sm={8} md={6}>
-                      <TextField
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        label="Address 2"
-                        name="address2"
-                        value={userData.address2}
+                        name="address"
+                        value={userData.address}
                         onChange={handleChange}
                         margin="normal"
                       />
