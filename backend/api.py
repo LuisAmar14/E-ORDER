@@ -56,31 +56,36 @@ def modifyuser():
     except Exception as e:
         return f"An Error Occured: {e}"
 
-#PUT USER- Modificar usuario
-@app.route('/User/<user_id>', methods=['PUT'])
-def update_user(user_id):
+# PUT USER - Modify user based on user_name
+# PUT USER - Modify user using username instead of user ID
+@app.route('/User/<username>', methods=['PUT'])
+def update_user_by_username(username):
     """
-    Update user credentials (like email, password) in Firestore
-    :param user_id: The ID of the user to update
-    :return: Success or error response
+    Update user credentials (like email, password) in Firestore by username.
+    :param username: The username of the user to update.
+    :return: Success or error response.
     """
     try:
         user_data = request.json  # The updated user data from the request
 
-        # Fetch the user's document by ID
-        user_ref = users_ref.document(user_id)
-        user_doc = user_ref.get()
+        # Query the Firestore collection for the user with the given username
+        query = users_ref.where("user_name", "==", username).stream()
 
-        # Check if the user exists
-        if not user_doc.exists:
-            return jsonify({"error": "User not found"}), 404
+        user_ref = None
+        for user in query:
+            user_ref = users_ref.document(user.id)  # Get the document reference
+            break  # Stop after finding the first match since user_name should be unique
+
+        # If no user is found with the given username
+        if not user_ref:
+            return jsonify({"error": f"No user found with username: {username}"}), 404
 
         # Update the user's data in Firestore
         user_ref.update(user_data)
 
         return jsonify({
             "success": True,
-            "message": "User updated successfully",
+            "message": f"User with username '{username}' updated successfully",
             "updated_data": user_data
         }), 200
 
@@ -188,130 +193,165 @@ def validate_qty(qty):
 @app.route('/cart', methods=['POST'])
 def add_to_cart():
     try:
-        user_id = request.args.get('user_id')
-        if not user_id:
-            return jsonify({"message": "User ID is required"}), 400
-        
+        # Get the username from the query
+        username = request.args.get('username')
+        if not username:
+            return jsonify({"message": "Username is required"}), 400
+
+        # Get the data from the body of the request
         request_data = request.get_json()
         products = request_data.get('products')
-        
+
         if not products or not isinstance(products, list):
             return jsonify({"message": "Products should be a list"}), 400
 
-        cart_doc_ref = cart_ref.document(user_id)
+        # Check if a cart already exists for the user
+        cart_doc_ref = cart_ref.document(username)
         cart_doc = cart_doc_ref.get()
 
+        # If no cart exists, create a new one
         if not cart_doc.exists:
-            cart_ref.document(user_id).set({
-                'user_id': user_id,
+            cart_ref.document(username).set({
+                'username': username,
                 'cart_items': [],
                 'final_total': 0
             })
-            cart_doc = cart_ref.document(user_id).get()
+            cart_doc = cart_ref.document(username).get()
 
+        # Get current cart data
         cart_data = cart_doc.to_dict()
         cart_items = cart_data.get('cart_items', [])
 
+        # Process products to add to the cart
         for product in products:
             sku = product.get('sku')
             qty = product.get('qty')
+            if sku and qty:
+                # Check if the product is already in the cart
+                product_found = False
+                for item in cart_items:
+                    if item['sku'] == sku:
+                        item['qty'] += qty  # Increase quantity if product is already in the cart
+                        product_found = True
+                        break
 
-            if not sku or not qty:
-                return jsonify({"message": "SKU and quantity are required"}), 400
+                if not product_found:
+                    # Add new product to the cart if not already there
+                    cart_items.append({'sku': sku, 'qty': qty, 'total': 0})  # Set initial total to 0
 
-            if not validate_qty(qty):
-                return jsonify({"message": "Quantity must be greater than 0"}), 400
+        # Update the cart items with prices and totals
+        final_total = 0
+        for item in cart_items:
+            sku = item['sku']
+            qty = item['qty']
 
+            # Fetch the product details (name and price) using SKU
             product_docs = products_ref.where("SKU", "==", sku).limit(1).get()
-            if not product_docs:
-                return jsonify({"message": f"Product with SKU {sku} not found"}), 404
+            if product_docs:
+                product_data = product_docs[0].to_dict()
+                item['name'] = product_data.get('Name')
+                item['price'] = product_data.get('Price')
 
-            product_data = product_docs[0].to_dict()
-            price_unit = product_data.get('Price')
+                # Calculate total for this item
+                price_unit = item.get('price', 0)
+                item['total'] = price_unit * qty
+                final_total += item['total']
+            else:
+                item['name'] = "Unknown Product"
+                item['price'] = 0
+                item['total'] = 0
 
-            if price_unit is None or not isinstance(price_unit, (int, float)):
-                return jsonify({"message": "Product price not available or is not a valid number"}), 400
-
-            total = price_unit * qty
-
-            product_found = False
-            for item in cart_items:
-                if item['sku'] == sku:
-                    item['qty'] += qty
-                    item['total'] = item['price_unit'] * item['qty']
-                    product_found = True
-                    break
-
-            if not product_found:
-                cart_items.append({
-                    'sku': sku,
-                    'qty': qty,
-                    'price_unit': price_unit,
-                    'total': total,
-                    'status': 'active'
-                })
-
-        final_total = round(sum(item['total'] for item in cart_items), 2)
-
-        cart_doc_ref.update({
+        # Update the cart in the database
+        cart_ref.document(username).update({
             'cart_items': cart_items,
-            'final_total': final_total
+            'final_total': round(final_total, 2)  # Update the final total
         })
 
         return jsonify({"message": "Products added to cart successfully"}), 200
-    
     except Exception as e:
-        return jsonify({"error": f"An error occurred: {e}"}), 500
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
 
-
-@app.route('/cart', methods=['GET'])
-def get_cart():
+@app.route('/cart', methods=['DELETE'])
+def delete_cart():
     try:
-        user_id = request.args.get('user_id')
-        if not user_id:
-            return jsonify({"message": "User ID is required"}), 400
+        # Get the username from the query
+        username = request.args.get('username')
+        if not username:
+            return jsonify({"message": "Username is required"}), 400
 
-        cart_doc_ref = cart_ref.document(user_id)
+        # Check if the cart exists for the user
+        cart_doc_ref = cart_ref.document(username)
         cart_doc = cart_doc_ref.get()
 
         if not cart_doc.exists:
-            return jsonify({"message": "Cart not found for this user"}), 404
+            return jsonify({"message": "No cart found for this user"}), 404
+
+        # Delete the cart for the user
+        cart_ref.document(username).delete()
+
+        return jsonify({"message": "Cart has been cleared successfully"}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"An error occurred: {str(e)}"}), 500
+@app.route('/cart', methods=['GET'])
+def get_cart():
+    try:
+        username = request.args.get('username')  # Use 'username' instead of 'user_id'
+        if not username:
+            return jsonify({"message": "Username is required"}), 400
+
+        cart_doc_ref = cart_ref.document(username)  # Use 'username' here
+        cart_doc = cart_doc_ref.get()
+
+        if not cart_doc.exists:
+            return jsonify({"message": "Cart not found for this username"}), 404
 
         cart_data = cart_doc.to_dict()
+        cart_items = cart_data.get("cart_items", [])
+
+        # Add product details including image URL for each item in the cart
+        for item in cart_items:
+            sku = item['sku']
+            product_docs = products_ref.where("SKU", "==", sku).limit(1).get()
+            if product_docs:
+                product_data = product_docs[0].to_dict()
+                item['name'] = product_data.get('Name')
+                item['price'] = product_data.get('Price')
+                item['url'] = product_data.get('url')  # Include the image URL
+            else:
+                item['name'] = "Unknown Product"
+                item['price'] = 0  # Fallback if product is not found
+                item['url'] = None  # Fallback image URL
+
         final_total = round(cart_data.get("final_total", 0), 2)
 
         return jsonify({
-            "cart_items": cart_data.get("cart_items", []),
+            "cart_items": cart_items,
             "final_total": "{:.2f}".format(final_total)
         }), 200
-    
+
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
-
 
 @app.route('/cart', methods=['PUT'])
 def update_cart_item():
     try:
-        user_id = request.args.get('user_id')
-        if not user_id:
-            return jsonify({"message": "User ID is required"}), 400
+        username = request.args.get('username')  # Use 'username' instead of 'user_id'
+        if not username:
+            return jsonify({"message": "Username is required"}), 400
         
         request_data = request.get_json()
         sku = request_data.get('sku')
-        new_sku = request_data.get('new_sku')
-        new_qty = request_data.get('new_qty')
+        new_qty = request_data.get('qty')
 
-        if not sku or (new_qty is None and not new_sku):
-            return jsonify({"message": "SKU, new quantity, and/or new SKU are required"}), 400
+        if not sku or new_qty is None:
+            return jsonify({"message": "SKU and new quantity are required"}), 400
 
-        if new_qty is not None and not validate_qty(new_qty):
-            return jsonify({"message": "Quantity must be greater than 0"}), 400
-
-        cart_doc_ref = cart_ref.document(user_id)
+        cart_doc_ref = cart_ref.document(username)  # Use 'username' here
         cart_doc = cart_doc_ref.get()
 
         if not cart_doc.exists:
-            return jsonify({"message": "Cart not found for this user"}), 404
+            return jsonify({"message": "Cart not found for this username"}), 404
 
         cart_data = cart_doc.to_dict()
         cart_items = cart_data.get('cart_items', [])
@@ -319,25 +359,25 @@ def update_cart_item():
         product_found = False
         for item in cart_items:
             if item['sku'] == sku:
-                if new_sku:
-                    item['sku'] = new_sku
-
-                if new_qty is not None:
+                if new_qty == 0:
+                    # Remove the product from the cart if the quantity is 0
+                    cart_items.remove(item)
+                else:
+                    # Update the quantity and recalculate the total
                     item['qty'] = new_qty
 
-                final_sku = new_sku if new_sku else sku
-                product_docs = products_ref.where("SKU", "==", final_sku).limit(1).get()
-                if not product_docs:
-                    return jsonify({"message": f"Product with SKU {final_sku} not found"}), 404
+                    product_docs = products_ref.where("SKU", "==", sku).limit(1).get()
+                    if not product_docs:
+                        return jsonify({"message": f"Product with SKU {sku} not found"}), 404
 
-                product_data = product_docs[0].to_dict()
-                price_unit = product_data.get('Price')
+                    product_data = product_docs[0].to_dict()
+                    price_unit = product_data.get('Price')
 
-                if price_unit is None or not isinstance(price_unit, (int, float)):
-                    return jsonify({"message": "Product price is not available or not valid"}), 400
+                    if price_unit is None or not isinstance(price_unit, (int, float)):
+                        return jsonify({"message": "Product price is not available or not valid"}), 400
 
-                item['price_unit'] = price_unit
-                item['total'] = price_unit * item['qty']
+                    item['price_unit'] = price_unit
+                    item['total'] = price_unit * new_qty  # Update the total based on new qty
 
                 product_found = True
                 break
@@ -345,8 +385,10 @@ def update_cart_item():
         if not product_found:
             return jsonify({"message": "Product not found in the cart"}), 404
 
+        # Recalculate the final total
         final_total = sum(item['total'] for item in cart_items)
 
+        # Update the cart in the database
         cart_doc_ref.update({
             'cart_items': cart_items,
             'final_total': round(final_total, 2)
@@ -358,24 +400,26 @@ def update_cart_item():
         return jsonify({"error": f"An error occurred: {e}"}), 500
 
 
+
+
 @app.route('/cart/remove', methods=['DELETE'])
 def remove_from_cart():
     try:
-        # Get user_id and sku from the request
-        user_id = request.args.get('user_id')
-        if not user_id:
-            return jsonify({"message": "User ID is required"}), 400
+        # Get username and sku from the request
+        username = request.args.get('username')  # Use 'username' instead of 'user_id'
+        if not username:
+            return jsonify({"message": "Username is required"}), 400
 
         sku = request.args.get('sku')
         if not sku:
             return jsonify({"message": "SKU is required"}), 400
 
         # Reference to the user's cart document
-        cart_doc_ref = cart_ref.document(user_id)
+        cart_doc_ref = cart_ref.document(username)  # Use 'username' here
         cart_doc = cart_doc_ref.get()
 
         if not cart_doc.exists:
-            return jsonify({"message": "Cart not found for this user"}), 404
+            return jsonify({"message": "Cart not found for this username"}), 404
 
         # Get the cart data
         cart_data = cart_doc.to_dict()
@@ -408,6 +452,7 @@ def remove_from_cart():
 
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
+
 
 '''---------------------------CHECKOUT---------------------------'''
 @app.route('/checkout/<user_id>', methods=['POST'])

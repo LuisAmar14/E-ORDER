@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
     { id: 'computers', name: 'Computers' },
     { id: 'appliances', name: 'Appliances' },
     { id: 'cellphones', name: 'Cellphones' },
-    { id: 'videogames', name: 'Video Games' },
+    { id: 'videogames', name: 'Videogames' },
   ];
 
   return (
@@ -91,13 +91,7 @@ const Navbar: React.FC = () => {
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
-            <Link to="/cart" style={{ textDecoration: 'none', color: '#4a4a4a' }}>
-              <Badge badgeContent={4} color="secondary">
-                <IconButton color="inherit" aria-label="Cart">
-                  <FaShoppingCart size={28} />
-                </IconButton>
-              </Badge>
-            </Link>
+           
             <Link to="/profile/signin" style={{ textDecoration: 'none', color: '#4a4a4a', marginLeft: '20px' }}>
               <IconButton color="inherit" aria-label="Profile">
                 <FaUser size={28} />
@@ -135,6 +129,7 @@ const Navbar: React.FC = () => {
               </Button>
             ))}
           </Box>
+          
         </Toolbar>
       </AppBar>
     </Box>

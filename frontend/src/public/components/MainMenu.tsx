@@ -173,26 +173,10 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
                     onClick={() => handleQuantityChange(product.SKU, -1)}
                     disabled={!cart[product.SKU]}
                   >
-                    <Remove />
+                    
                   </IconButton>
-                  <Typography sx={{ mx: 1 }}>{cart[product.SKU] || 0}</Typography>
-                  <IconButton
-                    aria-label="increase quantity"
-                    onClick={() => handleQuantityChange(product.SKU, 1)}
-                    disabled={product.inventory <= (cart[product.SKU] || 0)}
-                  >
-                    <Add />
-                  </IconButton>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<ShoppingCart />}
-                    onClick={() => handleAddToCart(product.SKU)}
-                    disabled={product.inventory === 0}
-                    sx={{ ml: 'auto', mr: 1 }}
-                  >
-                    Add to Cart
-                  </Button>
+                  
+ 
                 </Box>
               </Box>
             </Card>
