@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -8,6 +8,9 @@ import {
   Box,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../AuthContext'; // Usar el contexto para obtener el usuario
+import axios from 'axios';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -27,61 +30,159 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
   fontSize: '2rem',
   fontWeight: 'bold',
   color: '#00796b',
-  textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)',
-  borderRadius: '40px',
   marginBottom: theme.spacing(2),
 }));
 
 const TotalAmount = styled(Typography)(({ theme }) => ({
   fontSize: '1.5rem',
   fontWeight: 'bold',
-  color: '#00796b', // Color de la paleta del navbar
+  color: '#00796b',
   marginBottom: theme.spacing(3),
   textAlign: 'center',
 }));
 
-const CancelButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.secondary.main, // Use secondary color
-  color: '#fff', // Set text color to white
-  '&:hover': {
-    backgroundColor: theme.palette.secondary.dark, // Use darker shade for hover
-  },
-}));
-
 const CheckoutButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main, // Use primary color
+  backgroundColor: theme.palette.primary.main,
   color: '#fff',
   '&:hover': {
-    backgroundColor: theme.palette.primary.dark, // Use darker shade for hover
+    backgroundColor: theme.palette.primary.dark,
   },
 }));
 
 const Checkout: React.FC = () => {
-  const totalAmount = 60; // Cambia esto según el total real
+  const { user } = useAuth(); // Obtener usuario desde el contexto
+  const [totalAmount, setTotalAmount] = useState<number | null>(null); // Estado para el total
+  const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState<any[]>([]);
 
-  const handleConfirmPayment = () => {
-    alert('Payment confirmed!');
-    // Aquí puedes agregar la lógica para procesar el pago
+  // Estado para los campos del formulario
+  const [formFields, setFormFields] = useState({
+    cardNumber: '',
+    cardName: '',
+    expirationDate: '',
+    cvv: '',
+  });
+
+  const [errors, setErrors] = useState({
+    cardNumber: '',
+    cardName: '',
+    expirationDate: '',
+    cvv: '',
+  });
+
+  const navigate = useNavigate(); // Hook para la redirección
+
+  useEffect(() => {
+    const fetchCartTotal = async () => {
+      if (user) {
+        try {
+          const response = await fetch(`http://192.168.1.69:8080/cart?username=${user.username}`);
+          if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+          const data = await response.json();
+          setTotalAmount(parseFloat(data.final_total));
+          setCartItems(data.cart_items || []); // Asignar los ítems del carrito
+        } catch (error) {
+          console.error('Error fetching cart total:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        console.warn('User not defined. Skipping cart fetch.');
+        setLoading(false);
+      }
+    };
+
+    fetchCartTotal();
+  }, [user]);
+
+  const validateField = (field: string, value: string) => {
+    let error = '';
+    switch (field) {
+      case 'cardNumber':
+        if (!/^\d{16}$/.test(value)) error = 'Card number must be 16 digits';
+        break;
+      case 'cardName':
+        if (value.trim() === '') error = 'Card name is required';
+        break;
+      case 'expirationDate':
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) error = 'Format must be MM/YY';
+        break;
+      case 'cvv':
+        if (!/^\d{3,4}$/.test(value)) error = 'CVV must be 3 or 4 digits';
+        break;
+      default:
+        break;
+    }
+    return error;
   };
 
-  const handleCancelPurchase = () => {
-    window.location.href = '/auth/cart'; // Redirige a /cart
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormFields((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  const handleEmptyCart = async () => {
+    if (user && cartItems.length > 0) {
+      try {
+        // Vaciar el carrito eliminando cada item
+        for (const item of cartItems) {
+          await axios.delete(`http://192.168.1.69:8080/cart/remove?username=${user.username}&sku=${item.sku}`);
+        }
+        setCartItems([]); // Vaciar el estado local
+        alert("El carrito ha sido vaciado exitosamente.");
+      } catch (error) {
+        console.error('Error vaciando el carrito:', error);
+        alert("Hubo un error al vaciar el carrito.");
+      }
+    } else {
+      console.warn('No user logged in or cart is empty.');
+    }
+  };
+
+  const handleConfirmPayment = async () => {
+    // Validar todos los campos antes de enviar
+    const newErrors = Object.keys(formFields).reduce((acc, field) => {
+      const error = validateField(field, formFields[field as keyof typeof formFields]);
+      if (error) acc[field as keyof typeof formFields] = error;
+      return acc;
+    }, {} as typeof errors);
+
+    setErrors(newErrors);
+
+    const isFormValid = Object.values(newErrors).every((error) => error === '');
+    if (isFormValid) {
+      alert('Payment confirmed!');
+      await handleEmptyCart(); // Vaciar el carrito después del pago
+      navigate('/auth/home'); // Redirigir a /auth/home
+    } else {
+      alert('Please correct the errors before proceeding.');
+    }
   };
 
   return (
     <StyledContainer>
       <Title>Checkout</Title>
       <StyledPaper>
-        <TotalAmount>Total: ${totalAmount.toFixed(2)}</TotalAmount>
+        {loading ? (
+          <Typography>Loading...</Typography>
+        ) : (
+          <TotalAmount>Total: ${totalAmount?.toFixed(2) || '0.00'}</TotalAmount>
+        )}
         <Box component="form" noValidate autoComplete="off">
           <TextField
             fullWidth
             label="Card Number"
+            name="cardNumber"
+            value={formFields.cardNumber}
+            onChange={handleInputChange}
+            error={!!errors.cardNumber}
+            helperText={errors.cardNumber}
             variant="outlined"
             margin="normal"
             required
@@ -89,6 +190,11 @@ const Checkout: React.FC = () => {
           <TextField
             fullWidth
             label="Name on Card"
+            name="cardName"
+            value={formFields.cardName}
+            onChange={handleInputChange}
+            error={!!errors.cardName}
+            helperText={errors.cardName}
             variant="outlined"
             margin="normal"
             required
@@ -96,6 +202,11 @@ const Checkout: React.FC = () => {
           <TextField
             fullWidth
             label="Expiration Date (MM/YY)"
+            name="expirationDate"
+            value={formFields.expirationDate}
+            onChange={handleInputChange}
+            error={!!errors.expirationDate}
+            helperText={errors.expirationDate}
             variant="outlined"
             margin="normal"
             required
@@ -103,21 +214,32 @@ const Checkout: React.FC = () => {
           <TextField
             fullWidth
             label="CVV"
+            name="cvv"
+            value={formFields.cvv}
+            onChange={handleInputChange}
+            error={!!errors.cvv}
+            helperText={errors.cvv}
             variant="outlined"
             margin="normal"
             required
           />
           <Box mt={3} display="flex" justifyContent="center" gap={2}>
-            <CancelButton
+            <Button
               variant="contained"
-              onClick={handleCancelPurchase}
+              component={Link}
+              to="/auth/cart"
+              sx={{
+                backgroundColor: 'secondary.main',
+                color: '#fff',
+                '&:hover': { backgroundColor: 'secondary.dark' },
+              }}
             >
-              Cancel Purchase
-            </CancelButton>
-
+              Return to Cart
+            </Button>
             <CheckoutButton
               variant="contained"
               onClick={handleConfirmPayment}
+              disabled={loading || totalAmount === null || totalAmount <= 0} // Deshabilitar si el total es <= 0
             >
               Confirm Payment
             </CheckoutButton>
@@ -129,3 +251,4 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
+

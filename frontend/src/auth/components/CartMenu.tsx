@@ -71,6 +71,7 @@ const ProductName = styled(Typography)(({ theme }) => ({
   whiteSpace: 'nowrap',
   marginRight: theme.spacing(2),
 }));
+
 const CartMenu: React.FC = () => {
   const { user } = useAuth(); // Usar el contexto para obtener el usuario
   const [cartItems, setCartItems] = useState<any[]>([]);
@@ -142,19 +143,15 @@ const CartMenu: React.FC = () => {
     }
 
     try {
-        // Realizar la solicitud DELETE al endpoint
         const response = await axios.delete('http://192.168.1.69:8080/cart/remove', {
             params: { username: user.username, sku },
         });
 
-        // Verificar si la eliminación fue exitosa
         if (response.status === 200) {
-            // Actualizar el estado local eliminando el producto
             setCartItems((prevItems) => prevItems.filter(item => item.sku !== sku));
 
-            // Recalcular el total después de la eliminación
             const newTotal = cartItems
-                .filter(item => item.sku !== sku) // Excluir el producto eliminado
+                .filter(item => item.sku !== sku)
                 .reduce((acc, item) => acc + item.price * item.qty, 0);
 
             setFinalTotal(newTotal.toFixed(2));
@@ -167,7 +164,6 @@ const CartMenu: React.FC = () => {
         alert('Ocurrió un error al intentar eliminar el producto.');
     }
 };
-
 
   const handleEmptyCart = async () => {
     if (user) {
@@ -255,6 +251,7 @@ const CartMenu: React.FC = () => {
             variant="contained"
             color="primary"
             startIcon={<AttachMoneyIcon />}
+            disabled={parseFloat(finalTotal) <= 0} // Deshabilitar si el total es <= 0
           >
             Proceed to Checkout
           </Button>
@@ -263,4 +260,5 @@ const CartMenu: React.FC = () => {
     </StyledContainer>
   );
 };
+
 export default CartMenu;
