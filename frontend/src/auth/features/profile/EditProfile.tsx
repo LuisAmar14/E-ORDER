@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../AuthContext';
-
+const apiUrl = "http://192.168.0.25";
 const StyledContainer = styled(Container)(({ theme }) => ({
   minHeight: '100vh',
   padding: theme.spacing(4),
@@ -101,9 +101,9 @@ const EditProfile: React.FC = () => {
     }
 
     try {
-      const usernameurl = `http://192.168.1.69:8080/User/${user?.username}`;
+      const usernameurl = `${apiUrl}:8080/User/${user?.username}`;
       alert(usernameurl);
-      const url = `http://192.168.1.69:8080/User/${user?.username}`;
+      const url = `${apiUrl}:8080/User/${user?.username}`;
       const response = await fetch(url, {
         method: 'PUT',
         headers: {

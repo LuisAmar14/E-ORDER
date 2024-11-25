@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, IconButton, Box, Snackbar } from '@mui/material';
 import { Add, Remove, ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
-import { useAuth } from '../../AuthContext'; // Asegúrate de importar tu contexto
-
+import { useAuth } from '../../AuthContext'; // Make sure you're using the context for auth
+const apiUrl = "http://192.168.0.25";
 interface Product {
   SKU: number;
   Name: string;
@@ -18,7 +18,7 @@ interface MainMenuProps {
 }
 
 const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
-  const { user } = useAuth(); // Accede al usuario desde el contexto
+  const { user } = useAuth(); // Access the user from the context
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ [key: number]: number }>({});
   const [favorites, setFavorites] = useState<{ [key: number]: boolean }>({});
@@ -29,11 +29,14 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://192.168.1.69:8080/products');
+        const response = await fetch(`${apiUrl}:8080/products`);
         const data = await response.json();
+        console.log("Fetched products:", data); // Log the fetched products data
+
         const filteredProducts = Category
           ? data.filter((product: Product) => product.Category === Category)
           : data;
+
         setProducts(filteredProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -41,6 +44,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
         setSnackbarOpen(true);
       }
     };
+
     fetchProducts();
   }, [Category]);
 
@@ -52,7 +56,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
         return;
       }
 
-      const response = await fetch(`http://192.168.1.69:8080/cart?username=${user.username}`, {
+      const response = await fetch(`${apiUrl}:8080/cart?username=${user.username}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,6 +104,18 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
+  };
+
+  // Function to truncate the description to the characters before the second period
+  const truncateDescription = (description: string) => {
+    const firstPeriod = description.indexOf('.');
+    const secondPeriod = description.indexOf('.', firstPeriod + 1);
+    if (secondPeriod !== -1) {
+      const truncatedDescription = description.slice(0, secondPeriod + 1); // Include the second period
+      console.log(`Truncated: ${truncatedDescription}`); // Log for debugging
+      return truncatedDescription;
+    }
+    return description;
   };
 
   return (
@@ -165,7 +181,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
                       textAlign: 'center',
                     }}
                   >
-                    <Typography variant="body2">{product.Description}</Typography>
+                    <Typography variant="body2">{truncateDescription(product.Description)}</Typography>
                   </Box>
                 )}
               </Box>

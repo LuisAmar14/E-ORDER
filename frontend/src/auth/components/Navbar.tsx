@@ -38,51 +38,51 @@ const Navbar: React.FC = () => {
 
   return (
     <Box sx={{ margin: '0 20px' }}>
-      <AppBar 
-        position="static" 
-        sx={{ 
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', 
-          borderRadius: '20px', 
+      <AppBar
+        position="static"
+        sx={{
+          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+          borderRadius: '20px',
           overflow: 'hidden',
-          padding: '10px 0'
+          padding: '10px 0',
         }}
       >
-        <Toolbar 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            padding: '0', 
-            minHeight: '60px', 
+        <Toolbar
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0',
+            minHeight: '60px',
             alignItems: 'center',
-            marginTop: '10px' 
+            marginTop: '10px',
           }}
         >
           <Link to="/auth/home" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-            <img 
-              src={logo} 
-              alt="Logo" 
-              style={{ 
-                height: '200px', 
-                maxWidth: '200px', 
-                margin: '0', 
-              }} 
+            <img
+              src={logo}
+              alt="Logo"
+              style={{
+                height: '200px',
+                maxWidth: '200px',
+                margin: '0',
+              }}
             />
           </Link>
 
           <Box sx={{ textAlign: 'center', flexGrow: 1 }}>
-            <Typography 
-              variant="h1" 
-              sx={{ 
-                color: '#2b364a', 
+            <Typography
+              variant="h1"
+              sx={{
+                color: '#2b364a',
                 fontWeight: 'bold',
-                fontFamily: 'Arial, sans-serif', 
+                fontFamily: 'Arial, sans-serif',
                 letterSpacing: '1px',
-                paddingTop: '5px',  
-                paddingBottom: '0', 
+                paddingTop: '5px',
+                paddingBottom: '0',
                 transition: 'color 0.3s',
                 '&:hover': {
-                  color: '#f9f4e3'
-                }
+                  color: '#f9f4e3',
+                },
               }}
             >
               E-ORDER
@@ -94,7 +94,7 @@ const Navbar: React.FC = () => {
 
           <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
             <Link to="/auth/cart" style={{ textDecoration: 'none', color: '#4a4a4a' }}>
-              <Badge  color="secondary">
+              <Badge color="secondary">
                 <IconButton color="inherit" aria-label="Cart">
                   <FaShoppingCart size={28} />
                 </IconButton>
@@ -108,11 +108,11 @@ const Navbar: React.FC = () => {
           </Box>
         </Toolbar>
 
-        <Toolbar 
-          sx={{ 
-            justifyContent: 'flex-start', 
-            borderTop: '2px', 
-            padding: '10px 20px' 
+        <Toolbar
+          sx={{
+            justifyContent: 'flex-start',
+            borderTop: '2px',
+            padding: '10px 20px',
           }}
         >
           <Box sx={{ display: 'flex', gap: '20px', marginRight: '20px' }}>
@@ -122,71 +122,69 @@ const Navbar: React.FC = () => {
                 component={Link}
                 to={`/auth/category/${category.id}`}
                 color="inherit"
-                sx={{ 
-                  fontWeight: '500', 
+                sx={{
+                  fontWeight: '500',
                   textTransform: 'uppercase',
                   fontSize: '0.875rem',
                   transition: 'color 0.3s, transform 0.3s',
                   '&:hover': {
                     color: '#f9f4e3',
                     transform: 'scale(1.1)',
-                  }
+                  },
                 }}
               >
                 {category.name}
               </Button>
             ))}
-            <div>
-              {user ? (
-                <Typography variant="h6" sx={{ color: '#2b364a' }} align="center">
-                  Welcome! {user.username}
-                </Typography>
-              ) : (
-                <p></p>
-              )}
-            </div>
           </Box>
-          
-          {/* Cerrar sesión button */}
-          <Box 
-  sx={{ 
-    position: 'absolute', 
-    bottom: '10px', 
-    right: '10px', 
-    display: 'flex', 
-    justifyContent: 'flex-end', 
-    zIndex: 999 
-  }}
->
-<Link to="/" style={{ textDecoration: 'none' }}>
-  <Button 
-    variant="contained" 
-    color="secondary" 
-    sx={{
-      height: '40px',
-      padding: '0 20px',
-      borderRadius: '25px',
-      fontSize: '0.875rem',
-      fontWeight: '500',
-      backgroundColor: '#EAA799',
-      textTransform: 'none',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-      transition: 'all 0.3s ease-in-out',
-      '&:hover': {
-        backgroundColor: '#CD5c5c',
-        transform: 'scale(1.05)',
-        boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
-      },
-      '&:active': {
-        backgroundColor: '#EAA799',
-      },
-    }}
-  >
-    Cerrar Sesión
-  </Button>
-  </Link>
-</Box>
 
+          {/* Box for "Cerrar Sesión" button, pushed to the right */}
+          <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+            {user && (
+              <Typography
+                variant="h6"
+                sx={{
+                  color: '#317873',
+                  fontSize: '1.25rem',
+                  fontWeight: 'bold',
+                  textAlign: 'left',
+                  marginLeft: '20px',
+                }}
+              >
+                Welcome back, {user.username}!
+              </Typography>
+            )}
+            <Box sx={{ marginLeft: '20px' }}>
+              <Link to="/" style={{ textDecoration: 'none' }}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{
+                    height: '40px',
+                    padding: '0 20px',
+                    borderRadius: '25px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    backgroundColor: '#EAA799',
+                    textTransform: 'none',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      backgroundColor: '#CD5c5c',
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)',
+                    },
+                    '&:active': {
+                      backgroundColor: '#EAA799',
+                    },
+                  }}
+                  onClick={logout}
+                >
+                  Cerrar Sesión
+                </Button>
+              </Link>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>

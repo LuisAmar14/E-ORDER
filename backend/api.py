@@ -4,7 +4,11 @@ from firebase_admin import credentials, firestore, initialize_app
 from google.cloud.firestore_v1.base_query import FieldFilter
 from flask_cors import CORS
 ''' CONSTANTS '''
-CERTIFICATE_PATH = 'C:\\Escritorio\\firebase-bd.json'
+# Obtener el directorio actual en el que está el archivo api.py
+current_directory = os.path.dirname(os.path.abspath(__file__))
+
+# Construir la ruta completa al archivo firebase-bd.json
+CERTIFICATE_PATH = os.path.join(current_directory, 'firebase-bd.json')
 
 # Initialize Flask App, libreria que ayuda a hacer apis usando python
 app = Flask(__name__)

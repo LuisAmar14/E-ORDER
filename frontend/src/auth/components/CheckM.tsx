@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Box,
-} from '@mui/material';
+import { Container, Typography, Paper, TextField, Button, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../AuthContext'; // Usar el contexto para obtener el usuario
+import { useAuth } from '../../AuthContext';
 import axios from 'axios';
-
+import Confetti from 'react-confetti'; // Import the Confetti component
+const apiUrl = "http://192.168.0.25";
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
   minHeight: '100vh',
@@ -53,12 +47,11 @@ const CheckoutButton = styled(Button)(({ theme }) => ({
 }));
 
 const Checkout: React.FC = () => {
-  const { user } = useAuth(); // Obtener usuario desde el contexto
-  const [totalAmount, setTotalAmount] = useState<number | null>(null); // Estado para el total
+  const { user } = useAuth(); 
+  const [totalAmount, setTotalAmount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState<any[]>([]);
 
-  // Estado para los campos del formulario
   const [formFields, setFormFields] = useState({
     cardNumber: '',
     cardName: '',
@@ -73,19 +66,21 @@ const Checkout: React.FC = () => {
     cvv: '',
   });
 
-  const navigate = useNavigate(); // Hook para la redirección
+  const [showConfetti, setShowConfetti] = useState(false); // State for confetti effect
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartTotal = async () => {
       if (user) {
         try {
-          const response = await fetch(`http://192.168.1.69:8080/cart?username=${user.username}`);
+          const response = await fetch(`${apiUrl}:8080/cart?username=${user.username}`);
           if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
           }
           const data = await response.json();
           setTotalAmount(parseFloat(data.final_total));
-          setCartItems(data.cart_items || []); // Asignar los ítems del carrito
+          setCartItems(data.cart_items || []); 
         } catch (error) {
           console.error('Error fetching cart total:', error);
         } finally {
@@ -130,12 +125,11 @@ const Checkout: React.FC = () => {
   const handleEmptyCart = async () => {
     if (user && cartItems.length > 0) {
       try {
-        // Vaciar el carrito eliminando cada item
         for (const item of cartItems) {
-          await axios.delete(`http://192.168.1.69:8080/cart/remove?username=${user.username}&sku=${item.sku}`);
+          await axios.delete(`${apiUrl}:8080/cart/remove?username=${user.username}&sku=${item.sku}`);
         }
-        setCartItems([]); // Vaciar el estado local
-        alert("El carrito ha sido vaciado exitosamente.");
+        setCartItems([]); 
+        alert("Gracias por su compra!.");
       } catch (error) {
         console.error('Error vaciando el carrito:', error);
         alert("Hubo un error al vaciar el carrito.");
@@ -146,7 +140,6 @@ const Checkout: React.FC = () => {
   };
 
   const handleConfirmPayment = async () => {
-    // Validar todos los campos antes de enviar
     const newErrors = Object.keys(formFields).reduce((acc, field) => {
       const error = validateField(field, formFields[field as keyof typeof formFields]);
       if (error) acc[field as keyof typeof formFields] = error;
@@ -157,9 +150,9 @@ const Checkout: React.FC = () => {
 
     const isFormValid = Object.values(newErrors).every((error) => error === '');
     if (isFormValid) {
-      alert('Payment confirmed!');
-      await handleEmptyCart(); // Vaciar el carrito después del pago
-      navigate('/auth/home'); // Redirigir a /auth/home
+      setShowConfetti(true); // Show confetti when payment is confirmed
+      await handleEmptyCart(); // Empty the cart after payment
+      setTimeout(() => navigate('/auth/home'), 3000); // Redirect after confetti animation
     } else {
       alert('Please correct the errors before proceeding.');
     }
@@ -169,6 +162,7 @@ const Checkout: React.FC = () => {
     <StyledContainer>
       <Title>Checkout</Title>
       <StyledPaper>
+        {showConfetti && <Confetti />}
         {loading ? (
           <Typography>Loading...</Typography>
         ) : (
@@ -239,7 +233,7 @@ const Checkout: React.FC = () => {
             <CheckoutButton
               variant="contained"
               onClick={handleConfirmPayment}
-              disabled={loading || totalAmount === null || totalAmount <= 0} // Deshabilitar si el total es <= 0
+              disabled={loading || totalAmount === null || totalAmount <= 0}
             >
               Confirm Payment
             </CheckoutButton>
@@ -251,4 +245,3 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
-
