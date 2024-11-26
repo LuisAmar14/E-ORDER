@@ -5,17 +5,25 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from flask_cors import CORS
 ''' CONSTANTS '''
 # Obtener el directorio actual en el que está el archivo api.py
-current_directory = os.path.dirname(os.path.abspath(__file__))
-
-# Construir la ruta completa al archivo firebase-bd.json
-CERTIFICATE_PATH = os.path.join(current_directory, 'firebase-bd.json')
-
 # Initialize Flask App, libreria que ayuda a hacer apis usando python
 app = Flask(__name__)
 
 CORS(app) 
 # Initialize Firestore DB
-cred = credentials.Certificate(CERTIFICATE_PATH)
+
+cred = credentials.Certificate({
+  "type": "service_account",
+  "project_id": os.getenv("eorder-db"),
+  "private_key_id": os.getenv("087f17673ffbeb3c7b4b146ecd268599401d81fb"),
+  "private_key": os.getenv("-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDJT4H0hyq1EJLl\nIM7+ODyHYtL0OylNWFpW+P3X5bZJ8dYXPWuSEF7293g2nft4csHQJKQ3l2wUZri/\n0G7fgO7hqOtEA1/TrKYwYLWXtAEI1VTpXp4MzU1PRmiiUUvAoshjUfuZLDUwd82H\nSlPhfUOgELFAgynR/ooiWqrYSlzH3GwvnDOo/qXG7GS00WjOC1hxGska0EZMYVT0\niCV7L+Gb+bLyF/n+C8VrYF+XQCcVu1fQqbFMkY4U4oS4d2p2Gr7LfTYZ9G1SD8ve\ncNWpZgDxqFtQX06qFD5TW8AbTD+K/qIzK6hedWo4XzyNHZ/IYgUCAbGaz0aQqwFC\nKDyVlQENAgMBAAECggEAVblFMh8y6PqfSvHPI0NIRzCmezkMK/MBOUL7OWoI13Ej\nhS7y9TaCcfFMoBljIdXgQWWxBjk1XXSmnIvCAuvxDWf0kzhKoKVG+ZfdDDYrMJtD\ndsMDU5lDIAxv9xreQrAu29hn5sCD/9ksTL2yfXVtjCY/jKSt9M3K/bkVQlhcLQCn\nONai9pXAFFTpKf2B2OVO4JCKTZpyVNYUPkNCNg58JSdb+nPB+cO0/wWCZK6vITL3\nOuGfNCcsiujrgWsVlPvBNS/NCWTUKDmSJ4GS4/IY8FKim8QEk4iDzDWUeGmT1SnX\nY8qWTZtPjKoEUPMKLFz5R1B5badzr1BoOTkAuAL6wwKBgQDlfyDqHn7EpkUq3O0d\ntNrsp6DEBQi2CqzC+xLyNRQuvhh26brUqIucyJrHS/eUTGLSBLTJgTCNfv3Zw5r2\nF0usMBl36KN5+gRTPcuyvZqgKN9RMsG0/VvaRFOqEYBfFiizulQYw7dbnkKojweO\ni+F1jWeHkOnjKn/fKPvuWviXLwKBgQDgjxVaMouYu3IhuTE1DAiNTpIfoYHnMoGZ\nS8vMvOrMn6muPYGjKE6ve9me5aFhZ2OqAlh/Z+uHa8nsmeKwDzqGfMwLWKgTp+iq\nLPb+ewKyp8/L0lgWaAIEJYxZAJ5C0DsaEiO4YvWZXoWs2Pa3iGr9BrgblvnMz167\nXMEXF/GcgwKBgQCtKrcAUVBgPAHW7OryTmQezAGPxyiii/1+BotuPUTkXEYDfCug\niSkHfYrktNq0iMrMJAbyQUwMiHUtWt5TsJJF8+lTxDOON2wKD4fjcBP7o7uV/lGR\nqtcjJAlpO1l85jCCJSeNpCh3tjwgCgSut7fAxpkG/v6sjYX9MmSenwASuwKBgF0K\nq9wtaS2lLMrQQpUqITj7PwwgDQTQJmZvw0dXVynlVZa+IUKK5t9Kv4ZYup7zCZZd\nVnGjizEW9hk0QXqVNLiYaKqi1zEdtwcbjlMugJWpdi2LP7g46+zv6dDOssQYJwTM\nU0SIrB4ZzeUqGD8/JKUl7Y5w5Zt4qFWVPuPkpdUlAoGAP5+anhi+1CqOxr/8PiEi\no9xe4RJAFhm3ugSPTC4sT69R2Au5JIgG5Pz/fbTz8nbBLKEQkaUolz1KvjVuZWIZ\n7HT3Op7uvDL2cgIC2pOt3dTcoN/VCqsdyYIjdFnUEr8oUiCeAXLnW51ksQh3dUfh\nXJV6I29gRdh79JyQPFH0hMI=\n-----END PRIVATE KEY-----\n").replace("\\n","\n"),
+  "client_email": os.getenv("firebase-adminsdk-drxxe@eorder-db.iam.gserviceaccount.com"),
+  "client_id": os.getenv("111679531459405754394"),
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": os.getenv("https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-drxxe%40eorder-db.iam.gserviceaccount.com"),
+  "universe_domain": "googleapis.com"
+})
 default_app = initialize_app(cred)
 db = firestore.client()
 

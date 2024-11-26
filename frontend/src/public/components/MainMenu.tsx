@@ -31,7 +31,7 @@ interface Product {
 interface MainMenuProps {
   Category?: string;
 }
-const apiUrl = "localhost:8999";
+const apiUrl = "https://backend-production-b784.up.railway.app";
 const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ [key: number]: number }>({});
@@ -46,6 +46,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
         
         const response = await fetch(`${apiUrl}/products`);
         const data = await response.json();
+        console.log('Productos recibidos:', data);
         const filteredProducts = Category
           ? data.filter((product: Product) => product.Category === Category)
           : data;

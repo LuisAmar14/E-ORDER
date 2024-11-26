@@ -3,7 +3,7 @@ import { TextField, Button, Grid, styled } from "@mui/material";
 import { useAuth } from "../../../AuthContext"; // Asegúrate de que sea la ruta correcta
 import { useNavigate } from "react-router-dom";
 import { Api } from "@mui/icons-material";
-const apiUrl = "localhost:8999";
+const apiUrl = "backend-production-b784.up.railway.app:8080";
 const StyledForm = styled("form")(({ theme }) => ({
   width: "100%",
   marginTop: theme.spacing(3),
@@ -81,7 +81,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSubmit }) => {
         return;
       }
   
-      const response = await fetch("http://192.168.1.69:8080/User", {
+      const response = await fetch(`${apiUrl}User`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

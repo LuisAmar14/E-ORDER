@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../AuthContext';
 import axios from 'axios';
 import Confetti from 'react-confetti'; // Import the Confetti component
-const apiUrl = "localhost:8999";
+const apiUrl = "https://backend-production-b784.up.railway.app";
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
   minHeight: '100vh',

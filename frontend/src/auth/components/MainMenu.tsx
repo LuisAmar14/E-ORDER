@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, IconButton, Box, Snackbar } from '@mui/material';
 import { Add, Remove, ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useAuth } from '../../AuthContext'; // Make sure you're using the context for auth
-const apiUrl = "localhost:8999";
+const apiUrl = "https://backend-production-b784.up.railway.app";
 interface Product {
   SKU: number;
   Name: string;
