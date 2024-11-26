@@ -3,11 +3,9 @@ import { TextField, Button, Grid, styled } from "@mui/material";
 import { useAuth } from "../../../AuthContext"; // Asegúrate de que sea la ruta correcta
 import { useNavigate } from "react-router-dom";
 import { Api } from "@mui/icons-material";
-<<<<<<< HEAD
+
 const apiUrl = "127.0.0.1:8999";
-=======
-const apiUrl = "http://192.168.0.25";
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
+
 const StyledForm = styled("form")(({ theme }) => ({
   width: "100%",
   marginTop: theme.spacing(3),
@@ -24,11 +22,9 @@ interface SignUpProps {
 // Función para verificar si el usuario ya existe
 const checkUserExists = async (user_name: string, email: string) => {
   try {
-<<<<<<< HEAD
+
     const response = await fetch(`${apiUrl}/Users`);
-=======
-    const response = await fetch(`${apiUrl}:8080/Users`);
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
+
     if (!response.ok) {
       throw new Error("Error al obtener usuarios");
     }
@@ -88,12 +84,9 @@ const SignUp: React.FC<SignUpProps> = ({ onSubmit }) => {
         setIsSubmitting(false);
         return;
       }
-  
-<<<<<<< HEAD
+
       const response = await fetch(`${apiUrl}:8999/User`, {
-=======
-      const response = await fetch("http://192.168.1.69:8080/User", {
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
