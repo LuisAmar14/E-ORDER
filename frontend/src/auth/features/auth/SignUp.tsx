@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, Grid, styled } from "@mui/material";
-import { useAuth } from "../../../AuthContext"; // Asegúrate de que sea la ruta correcta
-import { useNavigate } from "react-router-dom";
-import { Api } from "@mui/icons-material";
-<<<<<<< HEAD
-const apiUrl = "127.0.0.1:8999";
-=======
-const apiUrl = "http://192.168.0.25";
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
+
 const StyledForm = styled("form")(({ theme }) => ({
   width: "100%",
   marginTop: theme.spacing(3),
@@ -20,39 +13,37 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 interface SignUpProps {
   onSubmit?: (data: Record<string, string>) => void; // Optional, in case you want to handle it externally
 }
-
 // Función para verificar si el usuario ya existe
 const checkUserExists = async (user_name: string, email: string) => {
-  try {
-<<<<<<< HEAD
-    const response = await fetch(`${apiUrl}/Users`);
-=======
-    const response = await fetch(`${apiUrl}:8080/Users`);
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
-    if (!response.ok) {
-      throw new Error("Error al obtener usuarios");
+    try {
+      const response = await fetch("http://192.168.1.69:8080/Users");
+      if (!response.ok) {
+        throw new Error("Error al obtener usuarios");
+      }
+  
+      const data = await response.json(); // Asegúrate de obtener el objeto completo
+      console.log("Respuesta del servidor:", data);
+  
+      // Verifica que la respuesta tenga éxito y contenga usuarios
+      if (!data.success || !Array.isArray(data.users)) {
+        throw new Error("Formato de respuesta inesperado");
+      }
+  
+      const userExists = data.users.some(
+        (user: { user_name: string; email: string }) =>
+          user.user_name === user_name || user.email === email
+      );
+  
+      return userExists;
+    } catch (error) {
+      console.error("Error en checkUserExists:", error);
+      throw error;
     }
-
-    const data = await response.json();
-    if (!data.success || !Array.isArray(data.users)) {
-      throw new Error("Formato de respuesta inesperado");
-    }
-
-    const userExists = data.users.some(
-      (user: { user_name: string; email: string }) =>
-        user.user_name === user_name || user.email === email
-    );
-
-    return userExists;
-  } catch (error) {
-    console.error("Error en checkUserExists:", error);
-    throw error;
-  }
-};
+  };
+  
+  
 
 const SignUp: React.FC<SignUpProps> = ({ onSubmit }) => {
-  const { login } = useAuth(); // Obtener la función de login del contexto
-  const navigate = useNavigate();
   const [signUpData, setSignUpData] = useState({
     user_name: "",
     country: "",
@@ -74,53 +65,43 @@ const SignUp: React.FC<SignUpProps> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
+
     if (signUpData.password !== signUpData.confirmPassword) {
       alert("Passwords do not match.");
       return;
     }
-  
+
     setIsSubmitting(true); // Indicar que el formulario está procesando
     try {
-      const userExists = await checkUserExists(signUpData.user_name, signUpData.email);
-      if (userExists) {
-        alert("El usuario o correo ya está registrado. Por favor, usar otro.");
-        setIsSubmitting(false);
-        return;
-      }
-  
-<<<<<<< HEAD
-      const response = await fetch(`${apiUrl}:8999/User`, {
-=======
+
+        const userExists = await checkUserExists(signUpData.user_name, signUpData.email);
+        if (userExists) {
+          alert("El usuario o correo ya está registrado. Por favor, usar otro.");
+          setIsSubmitting(false);
+          return;
+        }
       const response = await fetch("http://192.168.1.69:8080/User", {
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(signUpData),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Error al registrar usuario");
       }
-  
+
       const data = await response.json();
       alert("Usuario registrado con éxito");
-      console.log(data);
-  
-      // Mapea el objeto para cumplir con el tipo `User`
-      const userToSave = {
-        username: signUpData.user_name,
-        email: signUpData.email,
-        country: signUpData.country,
-        address: signUpData.address,
-        password: signUpData.password,
-      };
-  
-      // Guarda el usuario en tu sistema de autenticación
-      onSubmit && onSubmit(userToSave); // Si `onSubmit` existe
+      console.log(data); // Respuesta del servidor
+
+      // Si `onSubmit` está definido, llama la función proporcionada
+      onSubmit && onSubmit(signUpData);
+
+      // Limpia el formulario después de un envío exitoso
       setSignUpData({
         user_name: "",
         country: "",
@@ -136,12 +117,11 @@ const SignUp: React.FC<SignUpProps> = ({ onSubmit }) => {
       setIsSubmitting(false); // Terminar el estado de envío
     }
   };
-  
 
   return (
     <StyledForm onSubmit={handleSubmit}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid item xs={12}>
           <TextField
             variant="outlined"
             required
@@ -153,6 +133,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSubmit }) => {
             onChange={handleChange}
           />
         </Grid>
+        {/* Añade más campos según sea necesario */}
         <Grid item xs={12}>
           <TextField
             variant="outlined"

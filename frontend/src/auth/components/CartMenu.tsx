@@ -19,7 +19,11 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../AuthContext';
 
+<<<<<<< HEAD
 const apiUrl = "127.0.0.1:8999";
+=======
+const apiUrl = "http://192.168.0.25";
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
   minHeight: '100vh',
@@ -82,7 +86,11 @@ const CartMenu: React.FC = () => {
   const fetchCartData = async () => {
     try {
       if (user) {
+<<<<<<< HEAD
         const response = await axios.get(`${apiUrl}/cart?username=${user.username}`);
+=======
+        const response = await axios.get(`${apiUrl}:8080/cart?username=${user.username}`);
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         const items = response.data.cart_items;
         setCartItems(items);
       } else {
@@ -119,7 +127,11 @@ const CartMenu: React.FC = () => {
           )
         );
 
+<<<<<<< HEAD
         await axios.put(`${apiUrl}/cart?username=${user.username}`, {
+=======
+        await axios.put(`${apiUrl}:8080/cart?username=${user.username}`, {
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
           sku,
           qty: newQty,
         });
@@ -143,7 +155,11 @@ const CartMenu: React.FC = () => {
     }
 
     try {
+<<<<<<< HEAD
         const response = await axios.delete(`${apiUrl}/cart/remove`, {
+=======
+        const response = await axios.delete(`${apiUrl}:8080/cart/remove`, {
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
             params: { username: user.username, sku },
         });
 
@@ -169,7 +185,11 @@ const CartMenu: React.FC = () => {
     if (user) {
       try {
         for (const item of cartItems) {
+<<<<<<< HEAD
           await axios.delete(`${apiUrl}/cart/remove?username=${user.username}&sku=${item.sku}`);
+=======
+          await axios.delete(`${apiUrl}:8080/cart/remove?username=${user.username}&sku=${item.sku}`);
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         }
         setCartItems([]);
         alert("El carrito ha sido vaciado exitosamente.");

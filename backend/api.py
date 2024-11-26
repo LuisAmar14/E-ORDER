@@ -13,7 +13,11 @@ CERTIFICATE_PATH = os.path.join(current_directory, 'firebase-bd.json')
 # Initialize Flask App, libreria que ayuda a hacer apis usando python
 app = Flask(__name__)
 
+<<<<<<< HEAD
 CORS(app, resources={r"/*": {"origins": "*"}}) 
+=======
+CORS(app) 
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
 # Initialize Firestore DB
 cred = credentials.Certificate(CERTIFICATE_PATH)
 default_app = initialize_app(cred)
@@ -500,8 +504,21 @@ def checkout(user_id):
         return jsonify({"error": f"An error occurred: {e}"}), 500
 
 
+<<<<<<< HEAD
 ''' INIT API '''
 port = int(os.environ.get('PORT', 8999))
+=======
+
+
+
+
+
+
+
+
+''' INIT API '''
+port = int(os.environ.get('PORT', 8080))
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
 if __name__ == '__main__':
     app.run(threaded=True, host='0.0.0.0', port=port)
     # http://127.0.0.1:8080 local host

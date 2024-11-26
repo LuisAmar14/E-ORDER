@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, IconButton, Box, Snackbar } from '@mui/material';
 import { Add, Remove, ShoppingCart, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { useAuth } from '../../AuthContext'; // Make sure you're using the context for auth
+<<<<<<< HEAD
 const apiUrl = "127.0.0.1:8999";
+=======
+const apiUrl = "http://192.168.0.25";
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
 interface Product {
   SKU: number;
   Name: string;
@@ -29,7 +33,11 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+<<<<<<< HEAD
         const response = await fetch(`${apiUrl}/products`);
+=======
+        const response = await fetch(`${apiUrl}:8080/products`);
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         const data = await response.json();
         console.log("Fetched products:", data); // Log the fetched products data
 
@@ -56,7 +64,11 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
         return;
       }
 
+<<<<<<< HEAD
       const response = await fetch(`${apiUrl}/cart?username=${user.username}`, {
+=======
+      const response = await fetch(`${apiUrl}:8080/cart?username=${user.username}`, {
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

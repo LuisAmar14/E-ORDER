@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, styled } from '@mui/material';
-<<<<<<< HEAD
-const apiUrl = "127.0.0.1:8999";
-=======
-const apiUrl = "http://192.168.0.25";
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
+
 const StyledForm = styled('form')(({ theme }) => ({
   width: '100%',
   marginTop: theme.spacing(3),
@@ -39,11 +35,7 @@ const SignIn: React.FC<SignInProps> = ({ onSubmit }) => {
   // Función para verificar la existencia del usuario y la contraseña
   const getUserByUsername = async (username: string) => {
     try {
-<<<<<<< HEAD
-      const response = await fetch(`${apiUrl}/UserByUsername?user_name=${username}`);
-=======
-      const response = await fetch(`${apiUrl}:8080/UserByUsername?user_name=${username}`);
->>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
+      const response = await fetch(`http://192.168.1.69:8080/UserByUsername?user_name=${username}`);
       if (!response.ok) {
         throw new Error('User not found');
       }

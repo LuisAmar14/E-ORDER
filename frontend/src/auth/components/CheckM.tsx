@@ -5,7 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../AuthContext';
 import axios from 'axios';
 import Confetti from 'react-confetti'; // Import the Confetti component
+<<<<<<< HEAD
 const apiUrl = "127.0.0.1:8999";
+=======
+const apiUrl = "http://192.168.0.25";
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
   minHeight: '100vh',
@@ -74,7 +78,11 @@ const Checkout: React.FC = () => {
     const fetchCartTotal = async () => {
       if (user) {
         try {
+<<<<<<< HEAD
           const response = await fetch(`${apiUrl}/cart?username=${user.username}`);
+=======
+          const response = await fetch(`${apiUrl}:8080/cart?username=${user.username}`);
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
           if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
           }
@@ -126,7 +134,11 @@ const Checkout: React.FC = () => {
     if (user && cartItems.length > 0) {
       try {
         for (const item of cartItems) {
+<<<<<<< HEAD
           await axios.delete(`${apiUrl}/cart/remove?username=${user.username}&sku=${item.sku}`);
+=======
+          await axios.delete(`${apiUrl}:8080/cart/remove?username=${user.username}&sku=${item.sku}`);
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         }
         setCartItems([]); 
         alert("Gracias por su compra!.");

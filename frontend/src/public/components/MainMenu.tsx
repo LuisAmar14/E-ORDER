@@ -31,7 +31,11 @@ interface Product {
 interface MainMenuProps {
   Category?: string;
 }
+<<<<<<< HEAD
 const apiUrl = "127.0.0.1:8999";
+=======
+const apiUrl = "http://192.168.0.25";
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
 const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ [key: number]: number }>({});
@@ -44,7 +48,11 @@ const MainMenu: React.FC<MainMenuProps> = ({ Category }) => {
     const fetchProducts = async () => {
       try {
         
+<<<<<<< HEAD
         const response = await fetch(`${apiUrl}/products`);
+=======
+        const response = await fetch(`${apiUrl}:8080/products`);
+>>>>>>> 729ade954818bf06d2a1d9eab21b4dad24ce2b4a
         const data = await response.json();
         const filteredProducts = Category
           ? data.filter((product: Product) => product.Category === Category)
