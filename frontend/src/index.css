@@ -1,0 +1,33 @@
+/* index.css */
+
+/* Reset margin and padding for body */
+body {
+  margin: 0;
+  padding: 0; /* Added to ensure no default padding */
+  
+  /* Font styles */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Background color */
+  background-color: #f9f3f3; /* Light cream background */
+  background-size: cover;
+  min-height: 100vh; /* Ensure body covers the viewport height */
+}
+
+/* Set height for root and html to ensure full height */
+html, body, #root {
+  height: 100%;
+}
+
+/* Style for code elements */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Optional: Style for any other elements, if necessary */
+/* This can include links, headings, etc. */
